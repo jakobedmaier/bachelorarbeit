@@ -1,0 +1,482 @@
+\chapter{Classical results}
+In this chapter, we present some classical results about the connections between the spectrum and the structural properties of a regular graph.
+Most information is provided by the second largest and the smallest eigenvalue.
+
+Given a $d$-regular graph $G$ on $n$ vertices, we denote its eigenvalues by 
+\begin{equation*}
+    d = \lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_n.
+\end{equation*}
+Furthermore, throughout this chapter $\lambda = \lambda(G) := \max \{ |\lambda_2|, |\lambda_n | \}$ denotes the largest absolute value of an eigenvalue other than $\lambda_1 = d$.
+We know that G is connected if and only if $d > \lambda_2$, and bipartite if and only if $\lambda_n = -d$. 
+The difference between the largest and second largest eigenvalue of $G$, namely $d - \lambda_2$, is called the \textit{spectral gap} \mbox{of $G$}.
+We will see that if the spectral gap is large, that is, $\lambda_2$ is small compared to $d$, $G$ has good expansion properties. 
+A small value of $-\lambda_n$ implies that the size of an independent set in $G$ cannot be too large.
+In the case where both $\lambda_2$ and $-\lambda_n$ are small, the edge distribution of the graph even resembles that of a random graph.  
+
+\section{Graph expansion and Cheeger's inequality}
+    \label{section:cheeger}
+We now introduce the concept of graph expansion, following the notation and terminology used in the survey \cite{expandergraphs}. 
+For $S, T \subseteq V(G)$, denote the set of edges from $S$ to $T$ by
+\begin{equation*}
+    E(S, T) := \{ (x, y) \in S \times T : xy \in E(G) \}
+\end{equation*}
+and let $e(S, T) := |E(S, T)|$. 
+Note that $e(S, T)$ counts directed edges; in particular, edges within $S \cap T$ are counted twice.
+Furthermore, define $E(S)$ as the set of all (undirected) edges with both endvertices in $S$, and $e(S):= |E(S)|$.
+
+\begin{definition}
+    Let $G$ be a graph on $n$ vertices, and let $S \subseteq V(G)$.
+    The \textit{edge boundary} of $S$, denoted $\partial S$, is the set
+    \begin{equation*}
+        \partial S := E(S, \overline{S})
+    \end{equation*}
+    of all edges from a vertex in $S$ to a vertex in $\overline{S} := V(G) \setminus S$.
+    The \textit{(edge) expansion ratio} $h(G)$ of $G$ is defined as 
+    \begin{equation*}
+        h(G) := \min \bigg \{ \frac{|\partial S|}{|S|} : S \subseteq V(G),\, 0 < |S|\; \le \frac{n}{2} \bigg \}.
+    \end{equation*}
+\end{definition}
+
+Note that the expansion ratio of a graph $G$ is positive if and only if $G$ is connected. 
+
+\begin{definition}
+    Let $\varepsilon > 0$. A family of $d$-regular graphs $(G_i)_{i \in \N}$ of size increasing with $i$ is called a \textit{family of} $\varepsilon$-\textit{expander graphs} if
+    \begin{equation*}
+        h(G_i) \ge \varepsilon, \ \ i \in \N.
+    \end{equation*}
+\end{definition}
+
+Qualitatively speaking, a family of expander graphs consists of sparse graphs with the property that, for any set of vertices $S$ that is "not too large", the number of edges leaving $S$ is bounded from below by $\varepsilon |S|$ for some constant $\varepsilon > 0$. 
+This implies that a good expander cannot be split into two large parts by removing only a few edges, a desirable property, for example, in the design of robust communication networks. 
+Since their introduction in the 1970s, expander graphs have found various applications in mathematics and computer science, e.g. in the construction of good error-correcting codes, the theory of metric embeddings (see \cite{expandergraphs}) and sorting networks (see \cite{aks}).
+
+As the properties of sparseness and good connectivity are seemingly conflicting, it may not be immediately clear that infinite families of $d$-regular expander graphs even exist.
+However, in the last decades, numerous constructions – both explicit and probabilistic – have been developed.
+This shall not be the focus of this thesis; for a more thorough introduction to expander graphs, we refer the reader to \cite{expandergraphs}.
+
+We should note that there are other interesting notions of graph expansion as well.
+The most notable variation of the above definition is vertex expansion, where instead of the edge boundary, the neighbourhood of a vertex set is considered.
+We will briefly encounter this notion of expansion in Chapter 4.
+
+Cheeger's inequality, one of the most fundamental results of spectral graph theory, relates the edge expansion ratio of a graph to its spectral gap. 
+
+\begin{theorem}[Cheeger's inequality] \label{thm:cheeger}
+    Let $G$ be a $d$-regular graph on $n$ vertices with second-largest eigenvalue $\lambda_2$. Then 
+    \begin{equation*}
+        \frac{d - \lambda_2}{2} \le h(G) \le \sqrt{2d (d - \lambda_2)}.
+    \end{equation*}
+\end{theorem}
+
+The inequality tells us that a large spectral gap implies a high expansion ratio, and vice versa. 
+The first versions of this theorem have been proved in the 1980's (see \cite{dodziuk, aloneigenvaluesandexpanders}), inspired by an analogous theorem of Cheeger \cite{cheeger} in the setting of Riemannian manifolds.
+Since then, the result has been refined and generalised several times.
+For instance, a similar result exists for the \textit{conductance}, an analogue of the expansion ratio for weighted graphs (see e.g. \cite[Chapter 21]{spielman}).
+
+Recall the definition of the Laplace matrix $L = D - A$ of $G$, where $D$ is the degree diagonal matrix.
+In the literature, Cheeger's inequality is often stated in terms of the second smallest eigenvalue \mbox{of $L$} (the smallest one is always zero).
+This way, it can naturally be generalised to the case of irregular graphs.
+In the case of a $d$-regular graph, the definition of the Laplace matrix simplifies to $L = dI - A$, and it is clear that the second-smallest eigenvalue of $L$ is precisely the spectral gap of $G$, i.e. \mbox{$d - \lambda_2$}.
+
+\begin{remark}
+    Both the lower and upper bounds are essentially tight:
+    \begin{enumerate}
+        \item The lower bound is met by the $d$-dimensional hypercube $Q_d$. 
+            By Example \ref{ex:special_spectra}, the spectral gap is $d - \lambda_2 = 2$. 
+            On the other hand, we have $h(Q_d) \le 1$, since $|\partial S| / |S|\; = 1$ for any $(d-1)$-dimensional subcube $S$ of $Q_d$. 
+
+        \item The cycle $C_n$ shows that the upper bound is tight up to a constant factor.
+            Here 
+            \begin{equation*}
+                h(C_n) = \frac{2}{\lfloor n / 2 \rfloor} = \Theta \Big (\frac{1}{n} \Big),
+            \end{equation*}
+            attained by the half cycle on $\lfloor n/2 \rfloor$ vertices.
+            Recalling again our discussion in Example \ref{ex:special_spectra}, we have $\lambda_2 = 2 \cos ( {2 \pi}/{n})$ (and, of course, $\lambda_1 = 2$).
+            Now, by the power series expansion of the cosine, 
+            \begin{equation*}
+                \cos \Big( \frac{2 \pi}{n} \Big) = 1 - \frac{2 \pi^2}{n^2} + O \Big( \frac{1}{n^4} \Big) = 1 - \Theta \Big( \frac{1}{n^2} \Big),
+            \end{equation*}
+            and hence the spectral gap is $\Theta ({1}/{n^2})$.
+    \end{enumerate}
+\end{remark}
+
+For the proof of Cheeger's inequality, we will follow \cite{expandergraphs} and show the lower and upper bounds of the theorem separately.
+
+\begin{proof}[Proof of the lower bound]
+    Recall that the principal eigenvector of $G$ is $\bm{1}$ because $G$ is regular.
+    By Rayleigh's principle, 
+    \begin{equation*}
+        \lambda_2 \ge \frac{\bm{u}^T A \bm{u}}{\bm{u}^T \bm{u}}
+    \end{equation*}
+    for any vector $\bm{u} \perp \bm{1}$. 
+    We are going to exhibit a vector $\bm{u} \perp \bm{1}$ with a Rayleigh quotient of at least $d - 2 h(G)$, hence proving $\lambda_2 \ge d - 2 h(G)$.
+    Let $S \subseteq V(G)$ be a subset of the vertices satisfying $h(G) = |\partial S|/|S|$ and $|S|\, \le n/2$ and consider $\bm{u} = |\overline{S}| \cdot \bm{1}_S - |S| \cdot \bm{1}_{\overline{S}}$.
+    Clearly, $\bm{u}^T \bm{1} = 0$. Furthermore,
+    \begin{equation*}
+        \bm{u}^T \bm{u} = 
+        %|\overline{S}|^2 \bm{1}_S^T \bm{1}_S - |\overline{S}| |S| \bm{1}_S^T \bm{1}_{\overline{S}} - |S| |\overline{S}| \bm{1}_{\overline{S}}^T \bm{1}_S + |S|^2 {\bm{1}_{\overline{S}}}^T \bm{1}_{\overline{S}}
+            |\overline{S}|^2 |S|\, -\, |\overline{S}| |S| \cdot 0 - |S| |\overline{S}| \cdot 0 + |S|^2 |\overline{S}|\;
+        = (|\overline{S}| \,+\, |S|) |S| |\overline{S}|  = n |S| |\overline{S}| 
+    \end{equation*}
+    and
+    \begin{equation*}
+        \bm{u}^T A \bm{u} = 2|\overline{S}|^2 e(S)\,+\, 2|S|^2 e(\overline{S})\, -\, 2 |\overline{S}| |S| e(S, \overline{S}).
+    \end{equation*}
+    Since $G$ is $d$-regular, we have $2 e(S) = d|S|\, -\, e(S, \overline{S})$ and $2 e(\overline{S}) = d |\overline{S}|\, -\, e(S, \overline{S})$. It follows that 
+    \begin{align*}
+        \bm{u}^T A \bm{u} &= d|\overline{S}|^2 |S| \,-\, |\overline{S}|^2 e(S, \overline{S}) + d|S|^2 |\overline{S}| \,-\, |S|^2 e(S, \overline{S}) - 2|\overline{S}| |S| e(S, \overline{S}) \\
+        &= d|S||\overline{S}| (|S| \,+\, |\overline{S}|) - (|S|^2 \,+\, 2 |\overline{S}| |S| \,+\, |\overline{S}|^2) e(S, \overline{S}) \\
+        &= nd |S| |\overline{S}|\,-\, n^2 e(S, \overline{S}).
+    \end{align*}
+    Using that $h(G) = |e(S, \overline{S})|/|S|$ and $|\overline S|\; \ge n/2$, we conclude
+    \begin{equation*}
+        \lambda_2 \ge \frac{\bm{u}^T A \bm{u}}{\bm{u}^T \bm{u}} = \frac{nd |S| |\overline{S}| \,-\, n^2 e(S, \overline{S})}{n |S| |\overline S|} = d - \frac{n e(S, \overline S)}{|S| |\overline S|} \ge d - 2h(G).
+    \end{equation*}
+\end{proof}
+
+\begin{proof}[Proof of the upper bound]
+    This part is known as the difficult direction. 
+    Let $\bm{x}$ be a $\lambda_2$-eigenvector of $G$. 
+    We want to partition $V(G)$ according to the sign of $\bm{x}$ (which has positive and negative entries since $\bm{x} \perp \bm{1}$).
+    The intuition here is that this partition somehow constitutes a sparse cut in $G$, that is, a partition of the vertex set in two large parts such that the number of edges joining both parts is small.
+    Define $\bm{y} = \bm{x}^{+}$ (that is, $\bm{y}_v = \max \{ \bm{x}_v, 0 \}$ for $v \in V(G)$) and 
+    \begin{equation*}
+        V^{+} = \supp(\bm{y}) = \{ v \in V(G) : \bm{y}_v > 0 \}.
+    \end{equation*}
+    Without loss of generality, we can assume that $|V^+|\; \le n/2$ (otherwise consider $-\bm{x}$, which is a $\lambda_2$-eigenvector as well).
+
+    Let $L$ be the Laplace matrix of $G$. Since $G$ is $d$-regular, we have $L = dI - A$.
+    We wish to prove our inequality by establishing lower and upper bounds for the Rayleigh quotient $\bm{y}^T L \bm{y}/\bm{y}^T \bm{y}$.
+
+    \begin{claim}
+        \begin{equation*}
+            \frac{\bm{y}^T L \bm{y}}{\bm{y}^T \bm{y}} \le d - \lambda_2.
+        \end{equation*}
+    \end{claim}
+    
+    \begin{proof}
+        For $v \in V^+$, we can write
+        \begin{align*}
+            (L\bm{y})_v &= d \bm{y}_v - \sum \limits_{w \in V(G)} A_{vw} \bm{y}_w \\
+                &= d \bm{x}_v - \sum \limits_{w \in V^+} A_{vw} \bm{x}_w \\
+                &\le d \bm{x}_v - \sum \limits_{w \in V(G)} A_{vw} \bm{x}_w 
+                = (d - \lambda_2) \cdot \bm{x}_v.
+        \end{align*}
+        Since $\bm{y}_v = 0$ for $v \notin V^+$, it follows that 
+        \begin{align*}
+            \bm{y}^T L \bm{y} &= \sum \limits_{v \in V(G)} \bm{y}_v (L\bm{y})_v \\
+                &\le (d - \lambda_2) \sum \limits_{v \in V^+} \bm{x}_v^2 \\ 
+                &= (d - \lambda_2) \sum \limits_{v \in V(G)} \bm{y}_v^2 = (d - \lambda_2) \cdot \bm{y}^T \bm{y},
+        \end{align*}
+        establishing the claim.
+    \end{proof}
+
+    \begin{claim} \label{claim:cheeger-lower}
+        \begin{equation*}
+            \frac{h(G)^2}{2d} \le \frac{\bm{y}^T L \bm{y}}{\bm{y}^T \bm{y}}.
+        \end{equation*}
+    \end{claim}
+
+    \begin{proof}
+        For ease of notation, let $h = h(G)$.
+        Define
+        \begin{equation*}
+            B = \sum \limits_{v \sim w} | \bm{y}_v^2 - \bm{y}_w^2 |,
+        \end{equation*}
+        where the summation is meant to be over each edge $vw \in E(G)$.
+        We are going to show that 
+        \begin{equation*}
+            h \cdot \|\bm{y} \|^2\, \le B \le \sqrt{2d} \cdot \|\bm{y} \| \cdot (\bm{y}^T L \bm{y})^{\frac{1}{2}},
+        \end{equation*}
+        which yields the desired inequality by squaring.
+
+        We start by proving the upper bound on $B$. 
+        By the Cauchy--Schwarz inequality, we have
+        \begin{align*}
+            B &= \sum \limits_{v \sim w} | \bm{y}_v^2 - \bm{y}_w^2 | \\
+                &= \sum \limits_{v \sim w} |\bm{y}_v + \bm{y}_w| | \bm{y}_v - \bm{y}_w|  \\ 
+                &\le \Bigg( \sum \limits_{v \sim w} (\bm{y}_v + \bm{y}_w)^2 \Bigg)^{\frac{1}{2}}  \Bigg( \sum \limits_{v \sim w} (\bm{y}_v - \bm{y}_w)^2 \Bigg)^{\frac{1}{2}} .
+        \end{align*}
+        By Proposition \ref{prop:laplacian-quadratic-form}, the second factor is
+        \begin{align*}
+            \Bigg ( \sum \limits_{v \sim w} (\bm{y}_v - \bm{y}_w)^2 \Bigg)^{\frac{1}{2}} = (\bm{y}^T L \bm{y})^{\frac{1}{2}}.
+        \end{align*}
+        Evaluating the first factor gives
+        \begin{align*}
+            \Bigg( \sum \limits_{v \sim w} (\bm{y}_v + \bm{y}_w)^2 \Bigg)^{\frac{1}{2}} &\le \Bigg( \sum \limits_{v \sim w} 2 (\bm{y}_v^2 + \bm{y}_w^2) \Bigg)^{\frac{1}{2}} \\
+                &= \Bigg( 2d \cdot \sum \limits_{v \in V(G)} \bm{y}_v^2 \Bigg)^{\frac{1}{2}} = \sqrt{2d} \cdot \| \bm{y} \|.
+        \end{align*}
+        The first inequality follows from the fact that  
+        \begin{equation*}
+            0 \le (\bm{y}_v - \bm{y}_w)^2 = \bm{y}_v^2 - 2 \bm{y}_v \bm{y}_w + \bm{y}_w^2,
+        \end{equation*}
+        so $\bm{y}_v^2 + \bm{y}_w^2 \ge 2 \bm{y}_v \bm{y}_w$.
+        For the middle equality we have used that each $\bm{y}_v^2$ occurs precisely $d$ times in the sum, namely for every edge incident with $v$.
+        Combining these inequalities, we conclude 
+        \begin{equation*}
+             B \le \sqrt{2d} \cdot \|\bm{y} \|  \cdot (\bm{y}^T L \bm{y})^{\frac{1}{2}}.
+        \end{equation*}
+
+        It remains to show the lower bound on $B$. 
+        For the rest of the proof, we assume that the vertices in $V(G)$ are labelled by $1, \dots, n$ such that $\bm{y}_1 \ge \dots \ge \bm{y}_n$.
+        % In particular, $\bm{y}_{i} = 0$ for all $i > |V^+|$.
+        We have
+        \begin{align*}
+            B &= \sum \limits_{\substack{v \sim w \\ v < w}} (\bm{y}_v^2 - \bm{y}_w^2) \\
+                    &= \sum \limits_{\substack{v \sim w \\ v < w}} \sum \limits_{i = v}^{w - 1} (\bm{y}_i^2 - \bm{y}_{i + 1}^2) 
+                = \sum \limits_{i = 1}^{n - 1} (\bm{y}_i^2 - \bm{y}_{i + 1}^2) \cdot e([i], \overline{[i]}).% \\ 
+        \end{align*}
+        For the last equality, observe that the summand $(\bm{y}_i^2 - \bm{y}_{i + 1}^2)$ appears for every edge $vw$ with $v \le i < w$, so precisely $e([i], \overline{[i]})$ times in total. 
+        As $\bm{y}_{i} = 0$ for all $i > |V^+|$, it follows that
+        \begin{align*}
+            B &= \sum \limits_{i \in V^+} (\bm{y}_i^2 - \bm{y}_{i + 1}^2) \cdot e([i], \overline{[i]}) \\ 
+                &\ge h \cdot \sum \limits_{i \in V^+} (\bm{y}_i^2 - \bm{y}_{i + 1}^2) \cdot i 
+                = h \cdot \sum_{i \in V^+} \bm{y}_i^2 = h \|\bm{y}\|^2.
+        \end{align*}
+        The inequality holds because $h \le e([i], \overline{[i]}) / i$ for $i \in V^+$. 
+        (Here the assumption that $|V^+|\; \le n/2$ comes to fruition.)
+        Altogether, this establishes Claim \ref{claim:cheeger-lower}.
+    \end{proof}
+
+    Combining the claims, we obtain
+    \begin{equation*}
+        \frac{h(G)^2}{2d} \le \frac{\bm{y}^T L \bm{y}}{\bm{y}^T \bm{y}} \le d - \lambda_2,
+    \end{equation*}
+    so $h(G) \le \sqrt{2d (d - \lambda_2)}$. This concludes the proof of Cheeger's inequality.
+\end{proof}
+
+Cheeger's inequality implies that expansion and spectral gap are qualitatively equivalent, so instead of constructing graphs with a high expansion ratio directly, one can also search for graphs with a large spectral gap.
+It is therefore of interest how large this gap can become.
+Clearly, the answer depends on whether $d$ grows with $n$ as $n \rightarrow \infty$. 
+The extremal example of the complete graph $K_n$, where $d = n - 1$, demonstrates that in this case one cannot expect a very meaningful result:
+$K_n$ has spectrum $n-1,  -1^{(n - 1)}$, so the spectral gap is $n$.
+
+However, if $d$ is fixed and $n$ grows large, the Alon--Boppana bound provides a satisfactory answer.
+\begin{theorem}[Alon--Boppana]
+    For every $d$-regular graph $G$ on $n$ vertices, 
+    \begin{equation*}
+        \lambda_2(G) \ge 2\sqrt{d - 1} - o(1),
+    \end{equation*}
+    where the term $o(1)$ tends to $0$ for fixed $d$ as $n \rightarrow \infty$.
+\end{theorem}
+
+Two different proofs for this result are given in \cite[Section 5]{expandergraphs}. 
+The following weaker statement is much more easily obtained, and it demonstrates that $\sqrt{d}$ is the right order of magnitude for an asymptotic lower bound on $\lambda = \max \{ |\lambda_2|, |\lambda_n| \}$.
+
+\begin{proposition}
+    For every $d$-regular graph $G$ on $n$ vertices, 
+    \begin{equation*}
+        \lambda \ge \sqrt{d} \cdot (1 - o(1)),
+    \end{equation*}
+    where the term $o(1)$ tends to $0$ for fixed $d$ as $n \rightarrow \infty$.
+\end{proposition}
+
+\begin{proof}
+    Recall that $\tr A^2 = 2 e(G)$. 
+    Since $G$ is $d$-regular, this number equals $nd$, and we have
+    \begin{equation*}
+        nd = \tr A^2 = \sum \limits_{i = 1}^n \lambda_i^2 \le d^2 + (n - 1)\lambda^2.
+    \end{equation*}
+    It follows that
+    \begin{equation*}
+        \lambda^2 \ge d \cdot \frac{n - d}{n - 1},
+    \end{equation*}
+    so $\lambda \ge \sqrt{d} \cdot (1 - o(1))$, as desired.
+\end{proof}
+
+We end this section with a brief mention of graphs that almost attain the Alon--Boppana bound.
+\begin{definition}
+    A $d$-regular graph $G$ is called a \textit{Ramanujan graph} if each eigenvalue $\lambda \ne \pm d$ satisfies $|\lambda|\; \le 2\sqrt{d - 1}$.
+\end{definition}
+
+There are many examples of small Ramanujan graphs, such as the complete \sloppy \mbox{graph $K_{d +1}$}.
+It is, however, very challenging to construct (for a fixed $d$) infinite families of $d$-regular graphs that are all Ramanujan.
+Indeed, in light of the Alon--Boppana bound, the condition for a graph to be Ramanujan is strongest possible, since for every $\varepsilon > 0$, any sufficiently large $d$-regular graph satisfies $\lambda_2 > 2\sqrt{d - 1} - \varepsilon$.
+
+A distinction is made between non-bipartite Ramanujan graphs and bipartite Ramanujan graphs (i.e. those having $-d$ as an eigenvalue).
+It is known that arbitrarily large $(q^k + 1)$-regular non-bipartite Ramanujan graphs exist for any prime number $q$ and $k \ge 1$ (see \cite{morgensternramanujangraphs}).
+Furthermore, Marcus, Spielman, and Srivastava \cite{interlacingfamilies} gave a probabilistic construction of infinite families of $d$-regular bipartite Ramanujan graphs for any integer $d \ge 3$.
+In particular, these results show that the Alon--Boppana bound is tight.
+Whether infinite families of $d$-regular non-bipartite Ramanujan graphs exist for any integer $d \ge 3$ remains an open problem.
+
+\section{Hoffman's bound} \label{section:hoffman-bound}
+The next result due to Hoffman provides a bound on the maximum size of an independent set in terms of the smallest eigenvalue $\lambda_n$.
+\begin{theorem}[Hoffman's bound]
+    Let $G$ be a $d$-regular graph. Then 
+    \begin{equation*}
+        \alpha(G) \le n \frac{-\lambda_n}{d - \lambda_n}.
+    \end{equation*}
+    Moreover, if an independent set $U$ attains this bound, then each vertex in $V(G) \setminus U$ has precisely $-\lambda_n$ neighbours in $U$. 
+\end{theorem}
+
+Note that in a non-empty graph, $\lambda_n < 0$.
+
+We follow the proof given in \cite[Theorem 3.5.2]{brouwerhaemers}, which uses interlacing on a particular quotient matrix.
+\begin{proof}
+    Let $U \subseteq V(G)$ be an independent set of size $\alpha := \alpha(G)$.
+    Consider a partition of $V(G)$ according to $U$ and $V(G) \setminus U$.
+    The corresponding quotient matrix has the form
+    \begin{equation*}
+        B = \begin{bmatrix}
+            0 & d \\ 
+            \frac{\alpha d}{n - \alpha} & d - \frac{\alpha d}{n - \alpha}
+        \end{bmatrix}.
+    \end{equation*}
+    By multiplying $B$ with $\bm{1}$, we see that $\bm{1}$ is an eigenvector of $B$ for the eigenvalue $\mu_1 = d$.
+    Since $\tr B = d - \frac{\alpha d}{n - \alpha}$, the second eigenvalue must be $\mu_2 = -\frac{\alpha d}{n - \alpha}$.
+    By interlacing (Proposition \ref{prop:partition-interlacing}) it follows that 
+    \begin{equation*}
+        -\frac{\alpha d}{n - \alpha} = \mu_2 \ge \lambda_n.
+    \end{equation*}
+    Solving for $\alpha$, we obtain the desired inequality:
+    \begin{align*}
+        -\frac{\alpha d}{n - \alpha} \ge \lambda_n \ &\Longleftrightarrow \ \alpha d \le -\lambda_n (n - \alpha)\\ 
+            &\Longleftrightarrow \ \alpha (d - \lambda_n) \le -n \lambda_n \\ 
+            &\Longleftrightarrow \ \alpha \le n \frac{- \lambda_n}{d - \lambda_n}.
+    \end{align*}
+
+    Now assume that equality holds for $U$, so we must have $\mu_2 = \lambda_n$.
+    Since also $d = \lambda_1 = \mu_1$, the interlacing is tight, and hence the partition is equitable. 
+    This means that the term $\frac{\alpha d}{n - \alpha} = -\lambda_n$ in the quotient matrix is precisely the number of neighbours that each vertex of $V(G) \setminus U$ has in $U$.
+\end{proof}
+
+Hoffman's bound can be used to prove the well-known Erd\H os--Ko--Rado theorem.
+
+\begin{theorem}[Erd\H os--Ko--Rado, \cite{erdoskorado}]
+    \label{thm:erdoskorado}
+    Let $v, r$ be positive integers with $v \ge 2r$.
+    Suppose $\mathcal A$ is a family of distinct $r$-element subsets of an $v$-element set $V$, in which any two subsets have at least one common element.
+    Then
+    \begin{equation*}
+        |\mathcal A |\;\le \binom{v - 1}{r - 1}.
+    \end{equation*}
+\end{theorem}
+
+Let $v \ge 2r$ as in the theorem, and let $V$ be a set of size $v$.
+The \textit{Kneser graph} $K(v, r)$ is the graph with vertex set $\binom{V}{r}$, i.e. the set of $r$-element subsets of $V$, in which two vertices are adjacent if and only if the corresponding subsets are disjoint.
+Clearly, we have $|K(v, r)| = \binom{v}{r}$, and each vertex has degree $\binom{v - r}{r}$.
+
+An independent set in $K(v, r)$ corresponds to a family of $r$-subsets of $V$ such that any two subsets share at least one element. 
+Hence, the Erd\H os--Ko--Rado theorem has an equivalent succinct graph-theoretic formulation: 
+\begin{equation*}
+    \alpha(K(v, r)) \le \binom{v - 1}{r - 1}.
+\end{equation*}
+
+Using Hoffman's bound, one can give a very short proof for this inequality.
+\begin{proof}[Proof of Theorem \ref{thm:erdoskorado}]
+    It is known (see e.g. \cite[Section 9.4]{godsilroyle}) that the least eigenvalue of the Kneser graph $K(v, r)$ is 
+    \begin{equation*}
+        - \binom{v - r - 1}{r - 1}.
+    \end{equation*}
+    Hence, by Hoffman's bound, 
+    \begin{align*}
+        \alpha(K(v, r)) &\le \binom{v}{r} \frac{\binom{v - r - 1}{r - 1}}{\binom{v - r}{r} + \binom{v - r - 1}{r - 1}} 
+            = \frac{\binom{v}{r}}{1 + \frac{\binom{v - r}{r}}{\binom{v - r - 1}{r - 1}}} 
+            = \frac{\binom{v }{r}}{1 + \frac{v - r}{r}}
+            = \frac{r}{v} \binom{v}{r} = \binom{v - 1}{r - 1}.
+    \end{align*}
+\end{proof}
+
+It is worth noting that the bound of the Erd\H os--Ko--Rado theorem is tight:
+For any fixed $a \in V$, the family $\mathcal A$ of all $r$-subsets of $V$ that contain $a$ has size precisely $\binom{v - 1}{r - 1}$.
+
+Since the problem of determining the independence number $\alpha(G)$ of a graph $G$ is NP-hard, any easily computable bound on $\alpha(G)$ is potentially also of practical interest. 
+The above observation on the tightness of the Erd\H os--Ko--Rado theorem suggests that Hoffman's bound can indeed often provide a good approximation for $\alpha(G)$.
+
+\section{Expander Mixing Lemma}
+For a $d$-regular graph $G$, let $\lambda = \lambda(G)$ denote the largest absolute value of an eigenvalue other than $\lambda_1 = d$, that is, $\lambda = \max \{ |\lambda_2|, |\lambda_n| \}$.
+The following well-known lemma tells us that if $\lambda$ is small, then the edges of $G$ are "evenly distributed" over the graph.
+
+\begin{lemma}[Expander mixing lemma]
+    For all $S, T \subseteq V(G)$ the following holds:
+    \begin{equation*}
+        \bigg| e(S, T) - \frac{d |S||T|}{n} \bigg| \le \lambda \sqrt{|S| |T|}.
+    \end{equation*}
+\end{lemma}
+
+The quantity $d|S||T|/n$ is the expected number of edges between $S$ and $T$ in a randomly chosen $d$-regular graph of order $n$.
+Hence, a small value of $\lambda$ implies that the actual number of edges between $S$ and $T$ does not deviate too much from the expected number, so the edge distribution is similar to that of a random graph.
+
+\begin{remark}
+    Bipartite graphs can have a large spectral gap, but they always satisfy $\lambda_n = -d$.
+    Since a bipartite graph hardly looks like a random $d$-regular graph, it is plausible that the term $\lambda \sqrt{|S||T|}$ cannot be replaced by $\lambda_2 \sqrt{|S||T|}$.
+    % For example, consider the complete bipartite graph $K_{\frac{n}{2}, \frac{n}{2}}$.
+    % Its second-largest eigenvalue $\lambda_2$ is $0$ (see Example \ref{ex:special_spectra}).
+    % However, if we choose $S$ and $T$ to be the two partition classes of $K_{\frac{n}{2}, \frac{n}{2}}$, we obtain
+    % \begin{equation*}
+    %     \bigg| e(S, T) - \frac{d |S||T|}{n} \bigg| = \bigg | \frac{n^2}{4} - \frac{n^2}{8} \bigg| = \frac{n^2}{8} > 0.
+    % \end{equation*}
+    For example, consider a \mbox{$d$-regular} bipartite Ramanujan graph $G$ with $d \ge 15$. 
+    Choose $S$ and $T$ to be the two partition classes of $G$.
+    Since $G$ is regular, $|S|\, = |T|\, = n/2$, and we obtain %hence $\lambda_2 \sqrt{|S| |T|} \le \sqrt{d - 1} \cdot n$. 
+    % However,
+    \begin{equation*}
+        \bigg| e(S, T) - \frac{d |S||T|}{n} \bigg| = \bigg| \frac{dn}{2} - \frac{d n^2}{4n} \bigg| = \frac{dn}{4} > \sqrt{d - 1} \cdot n \ge \lambda_2 \sqrt{|S| |T|},
+    \end{equation*}
+    where the penultimate inequality holds because $d \ge 15$.
+    This illustrates that a small value of $\lambda_2$ alone is not enough to guarantee this sort of "pseudorandomness".
+\end{remark}
+
+For the proof of the expander mixing lemma, we shall use the following small observation from linear algebra:
+\begin{observation} \label{observation:scalarproducts}
+    Let $\bm{v}_1, \dots, \bm{v}_n$ be an orthonormal basis of $\R^n$, and let $\bm{x} \in \R^n$. 
+    If $\bm{x} = \alpha_1 \bm{v}_1 + \dots + \alpha_n \bm{v}_n$, then $\alpha_i = \langle \bm{x}, \bm{v}_i \rangle$.
+    Furthermore, $\| \alpha \|\; = \| \bm{x} \|$.
+\end{observation}
+
+\begin{proof}
+    Using the orthonormality of the $\bm{v}_i$, we have
+    \begin{align*}
+        \sum \limits_{i = 1}^n \alpha_i \bm{v}_i 
+            &= \sum \limits_{i = 1}^n \sum \limits_{j = 1}^n \alpha_j \langle \bm{v}_j, \bm{v}_i \rangle \bm{v}_i 
+            = \sum \limits_{i = 1}^n \left \langle \sum \limits_{j = 1}^n \alpha_j \bm{v}_j, \bm{v}_i \right \rangle \bm{v}_i 
+                = \sum \limits_{i = 1}^n \langle \bm{x}, \bm{v}_i \rangle \bm{v}_i,
+    \end{align*}
+    and therefore $\alpha_i = \langle \bm{x}, \bm{v}_i \rangle$ for $i \in [n]$. 
+    As for the second part, 
+    \begin{equation*}
+        \| \bm{x} \|^2 \;= \langle \bm{x}, \bm{x} \rangle 
+            % = \left \langle \sum \limits_{i = 1}^n \alpha_i \bm{v}_i, \sum \limits_{i = 1}^n \alpha_i \bm{v}_i \right \rangle
+            = \sum \limits_{i = 1}^n \sum \limits_{j = 1}^n \langle \alpha_i \bm{v}_i, \alpha_j \bm{v}_j \rangle  = \sum \limits_{i = 1}^n \alpha_i ^2 = \| \alpha \|^2,
+    \end{equation*}
+    where the orthonormality was used for the penultimate equality.
+\end{proof}
+
+\begin{proof}[Proof of the expander mixing lemma]
+    Once again, we follow the proof given in \cite{expandergraphs}.
+    Let $\bm{1}_S, \bm{1}_T$ be the characteristic vectors of $S$ and $T$ (i.e., the $v$-th entry of $\bm{1}_S$ is one if $v \in S$ and zero otherwise).
+    Let $\bm{v}_1, \dots, \bm{v}_n$ be an orthonormal basis of eigenvectors (such that $A \bm{v}_i = \lambda_i \bm{v}_i$).
+    Since $G$ is regular, we can assume $\bm{v}_1 = \bm{1} / \sqrt{n}$.
+    Write $\bm{1}_S = \sum_i \alpha_i \bm{v}_i$ and $\bm{1}_T = \sum_j \beta_j \bm{v}_j$. Then
+    \begin{align*}
+        e(S, T) = \bm{1}_S ^T A \bm{1}_T 
+                &= \Bigg( \sum \limits_{i = 1}^n \alpha_i \bm{v}_i \Bigg)^T A \Bigg( \sum \limits_{j = 1}^n \beta_j \bm{v}_j \Bigg) \\
+                &= \Bigg( \sum \limits_{i = 1}^n \alpha_i \bm{v}_i \Bigg)^T \Bigg(\sum \limits_{i = 1}^n \beta_j \lambda_j \bm{v}_j \Bigg) 
+                = \sum \limits_{i = 1}^n \lambda_i \alpha_i \beta_i,
+    \end{align*}
+    where for the last equality we have used that the $\bm{v}_i$ are orthonormal. 
+    By Observation \ref{observation:scalarproducts}, we have \mbox{$\alpha_1 = \langle \bm{1}_S, {\bm{1}}/{\sqrt{n}} \rangle = {|S|}/{\sqrt{n}}$}, and similarly, $\beta_1 = {|T|}/{\sqrt{n}}$.
+    Since $\lambda_1 = d$, it follows that
+    \begin{equation*}
+        e(S, T) = d \cdot \frac{|S||T|}{n} + \sum \limits_{i = 2}^n \lambda_i \alpha_i \beta_i.
+    \end{equation*}
+    Finally, by the definition of $\lambda$ and using Cauchy--Schwarz, we obtain
+    \begin{align*}
+        \bigg| e(S, T) - \frac{d |S||T|}{n} \bigg| &= \bigg|  \sum \limits_{i = 2}^n \lambda_i \alpha_i \beta_i \bigg|  
+            \le \lambda \sum \limits_{i = 2}^n |\alpha_i \beta_i| \\
+            &\le \lambda \| \alpha \| \| \beta \| \; = \lambda \| \bm{1}_S \| \| \bm{1}_T \|\; = \lambda \sqrt{|S| |T|},
+    \end{align*}
+    completing the proof.
+\end{proof}
+
+Bilu and Linial \cite{bilulinial} showed that a converse of the expander mixing lemma holds as well.
+\begin{lemma}
+    Let $G$ be a $d$-regular graph satisfying 
+    \begin{equation*}
+        \bigg| e(S, T) - \frac{d |S||T|}{n} \bigg| \le \alpha \sqrt{|S| |T|},
+    \end{equation*}
+    for any two disjoint sets $S, T \subseteq V(G)$ and for some $\alpha > 0$.
+    Then 
+    \begin{equation*}
+        \lambda(G) \le O (\alpha \cdot (1 + \log (d / \alpha))).
+    \end{equation*}
+\end{lemma}

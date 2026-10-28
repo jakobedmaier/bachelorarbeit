@@ -1,0 +1,315 @@
+\chapter{The Sensitivity Conjecture}
+
+This chapter presents a surprising application of spectral graph theory to a long-standing open problem in theoretical computer science: the Sensitivity Conjecture. 
+The problem is concerned with the relationship between two different complexity measures of Boolean functions, and has connections to the combinatorics of induced subgraphs of the hypercube.
+
+\section{Boolean functions and complexity measures}
+A \textit{Boolean function} is a function $f: \{0, 1\}^n \rightarrow \{0, 1 \}$.
+The values (or \textit{bits}) $0$ and $1$ are usually interpreted as truth values \textit{false} and \textit{true}, respectively.
+Simple examples of Boolean functions include the logical AND, which can be encoded as \begin{equation*}
+    f(x, y) = xy,
+\end{equation*} 
+the logical OR 
+\begin{equation*}
+    f(x,y) = x + y - xy,
+\end{equation*}
+and the negation 
+\begin{equation*}
+    f(x) = 1 - x.
+\end{equation*}
+Computational complexity theory is the study of the inherent hardness of computational tasks. 
+In particular, this involves establishing lower bounds on the time (or space) needed to compute a given Boolean function on all input vectors, regardless of the algorithm chosen. 
+However, for many practically relevant examples (including all NP-complete problems), there is a significant gap between these lower bounds and the best-known algorithms.
+In order to obtain a better understanding of the computational hardness of Boolean functions, various complexity measures have been introduced and studied.
+%
+% The central question with regard to Boolean functions, as phrased by Jukna in \cite{booleanfunctioncomplexity}, is: 
+%
+% \begin{quote}
+%     Given a Boolean function, how many of these simplest operations do we need to compute the function on all input vectors?
+% \end{quote}
+%
+% In order to establish meaningful bounds on the complexity of Boolean functions, various complexity measures have been introduced and studied. 
+We are interested in the relation between two of them, namely \textit{sensitivity} and \textit{block sensitivity}.
+
+For any $\bm{x} \in \{0, 1\}^n$ and $S \subseteq [n]$, we denote by $\bm{x}^S$ the vector obtained from $\bm{x}$ by flipping all bits in $S$.
+
+\begin{definition}
+    Let $f: \{0, 1\}^n \rightarrow \{0, 1 \}$ be a Boolean function. 
+    For any $\bm{x} \in \{0, 1\}^n$, the \textit{local sensitivity} $s(f, \bm{x})$ of $f$ on the input $\bm{x}$ is defined as the number of indices $i \in [n]$ such that $f(\bm{x}) \ne f(\bm{x}^{\{i \}} )$.
+    The \textit{sensitivity} $s(f)$ of $f$ is 
+    \begin{equation*}
+        s(f) = \max \limits_{\bm{x} \in \{0, 1\}^n} s(f, \bm{x}).
+    \end{equation*}
+
+    Similarly, the \textit{local block sensitivity} $bs(f, \bm{x})$ of $f$ on the input $\bm{x}$ is defined as the maximum number $k$ of pairwise disjoint blocks $B_1, \dots, B_k \subseteq [n]$ such that $f(\bm{x}) \ne f(\bm{x}^{B_i})$ for each $i \in [k]$.
+    The \textit{block sensitivity} $bs(f)$ of $f$ is 
+    \begin{equation*}
+        bs(f) = \max \limits_{\bm{x} \in \{0, 1\}^n} bs(f, \bm{x}).
+    \end{equation*}
+\end{definition} 
+
+As the name indicates, sensitivity and block sensitivity measure how sensitive a Boolean function is with respect to local changes in the input.
+Since the blocks $B_i$ in the definition of block sensitivity can be chosen as $B_i = \{i \}$, it is clear that $bs(f) \ge s(f)$.
+On the other hand, the so-called \textit{Sensitivity Conjecture}, posed by Nisan and Szegedy \cite{nisanszegedy} in the early 1990's, suggested that $bs(f)$ was bounded from above by a polynomial of $s(f)$.
+
+\begin{conjecture}[Sensitivity Conjecture]
+    There exists a constant $C > 0$ such that for every Boolean function $f$, 
+    \begin{equation*}
+        bs(f) \le s(f)^C.
+    \end{equation*}
+\end{conjecture}
+
+We say that two complexity measures $s_1$ and $s_2$ are \textit{polynomially related} if there exist polynomials $p_1, p_2$ such that 
+\begin{equation*}
+    s_1(f) \le p_2(s_2(f)) \ \text{ and } \ s_2(f) \le p_1(s_1(f))
+\end{equation*}
+for all Boolean functions $f$.
+
+It has been known that the block sensitivity is polynomially related to various other complexity measures of Boolean functions, such as \textit{certificate complexity}, \textit{decision tree complexity}, and the \textit{degree} of a representing polynomial (for details, see the survey \cite{buhrmanndewolf}).
+Hence, a positive resolution of the Sensitivity Conjecture would mean that the sensitivity falls in the same category of polynomially related complexity measures.
+
+Despite the efforts of numerous researchers, very little progress has been made for almost thirty years, which is why the Sensitivity Conjecture was considered one of the outstanding open problems in theoretical computer science.
+It was not until 2019 that Huang \cite{sensitivity} finally achieved a breakthrough and settled the conjecture.
+His proof uses methods of spectral graph theory and is notable for its brevity and elegance.
+
+\section{Boolean functions as real polynomials}
+Let $f: \{0, 1\}^n \rightarrow \{0, 1 \}$ be a Boolean function. 
+We say that a polynomial $p: \R^n \rightarrow \R$ \textit{represents} $f$ if $p(\bm{x}) = f(\bm{x})$ for all $\bm{x} \in \{0, 1\}^n$.
+Any Boolean function $f: \{0, 1\}^n \rightarrow \{0, 1 \}$ can be represented as a real polynomial in $\R^n$.
+In fact, such a polynomial $p$ can be explicitly obtained by summing over the values taken by $f$ multiplied by indicator polynomials:
+\begin{equation*}
+    p(\bm{t}) = \sum \limits_{\bm{x} \in \{0, 1\}^n} f(\bm{x})  \prod \limits_{i: \bm{x}_i = 1} \bm{t}_i \prod \limits_{i: \bm{x}_i = 0} (1 - \bm{t}_i  ).
+\end{equation*}
+This polynomial is multilinear (that is, no monomial contains a variable raised to a power greater than 1), and if we restrict ourselves to multilinear polynomials, the representation of $f$ becomes unique:
+
+\begin{lemma}
+    Let $p, q : \R^n \rightarrow \R$ be multilinear polynomials that both represent $f$. Then $p = q$. 
+\end{lemma}
+
+\begin{proof}
+    Suppose $p \ne q$, and let $r = p - q$, so that $r$ is not the zero polynomial. 
+    Consider a subset of indices $S \subseteq [n]$ of minimal size and a coefficient $\alpha \ne 0$ such that that 
+    \begin{equation*}
+        \alpha \prod \limits_{i \in S} \bm{x}_i
+    \end{equation*}
+    is a monomial (of minimal degree) in $r$.
+    Let $\bm{x} \in \{0, 1\}^n$ such that $\bm{x}_i = 1$ if $i \in S$, and $\bm{x}_i = 0$ otherwise.
+    Since $S$ was chosen to have minimal size and $p, q$ are multilinear, all other monomials of $r$ take the value $0$ on $\bm{x}$.
+    But this implies 
+    \begin{equation*}
+        r(\bm{x}) = \alpha \ne 0 = p(\bm{x}) - q(\bm{x}),
+    \end{equation*}
+    a contradiction.
+\end{proof}
+
+In light of this lemma, one can define the \textit{degree} of a Boolean function $f$, denoted $\deg(f)$, as the degree of the unique multilinear real polynomial \mbox{representing $f$}. 
+Recall that in the case of a multilinear polynomial $p$, the degree of $p$ is just the maximum number of distinct variables occurring in any monomial in $p$.
+
+Similarly to sensitivity and block sensitivity, the degree is an important complexity measure of a Boolean function. 
+Degree and block sensitivity have been shown to be polynomially related (see \cite{buhrmanndewolf}).
+In particular, Tal \cite{tal} established the following bound, improving on an earlier result by Nisan and Szegedy \cite{nisanszegedy}.
+\begin{theorem} \label{thm:bs-lt-deg}
+    For any Boolean function $f$, 
+    \begin{equation*}
+        bs(f) \le \deg (f)^2.
+    \end{equation*}
+\end{theorem}
+
+Furthermore, Gotsman and Linial \cite{gotsmanlinial} have found the following remarkable equivalence, providing a bedrock for Huang's later work.
+
+\begin{theorem} \label{thm:sensitivity-equivalence}
+    For any increasing function $h: \N \rightarrow \R$, the following statements are equivalent:
+    \begin{enumerate}
+        \item For any induced subgraph $H$ of the $n$-dimensional hypercube $Q_n$ with $|H|\; \ne 2^{n - 1}$, we have
+            \begin{equation*}
+                \max \{\Delta(H), \Delta(Q_n - H) \} \ge h(n).
+            \end{equation*}
+        \item For any Boolean function $f$, we have $s(f) \ge h(\deg(f))$.
+    \end{enumerate}
+\end{theorem}
+
+The proof of Theorem \ref{thm:sensitivity-equivalence} in \cite{gotsmanlinial} requires Fourier analysis, so we are only going to sketch how (i) can be transformed into an equivalent statement concerning Boolean functions.
+The attentive reader may have noticed that the domain of a Boolean function is precisely the vertex set of an $n$-dimensional hypercube. 
+Hence, we can associate any induced subgraph $H$ of $Q_n$ with a Boolean function $g: \{0, 1\}^n \rightarrow \{ 0 , 1\}$, such that
+\begin{equation*}
+    g(\bm{x}) = 1 \ \Longleftrightarrow \ \bm{x} \in V(H).
+\end{equation*}
+Then we have $d_H(\bm{x}) = n - s(g, \bm{x})$, and the same holds for all $\bm{x} \in V(Q_n - H)$.
+Furthermore, note that the condition $|H| \; \ne 2^{n - 1}$ implies that $g$ is unbalanced, i.e. $|g^{-1} (\{0\})|\; \ne |g^{-1} (\{1\})|$.
+Therefore, (i) is equivalent to the following statement: 
+
+\begingroup
+    \itshape
+    \begin{itemize}[font=\upshape]
+        \item[(i')] For any unbalanced Boolean function $g$, there exists an input $\bm{x}$ such that 
+            \begin{equation*}
+                s(g, \bm{x}) \le n - h(n).
+            \end{equation*}
+    \end{itemize}
+\endgroup
+
+The two theorems above show that to verify the Sensitivity Conjecture, it is sufficient to prove statement (i) of Theorem \ref{thm:sensitivity-equivalence} for a suitable function $h$.
+In \cite{gotsmanlinial}, the authors already suggested that $h(n)$ might be chosen as $\sqrt{n}$.
+
+\section{The proof of the Sensitivity Conjecture}
+    \label{section:sensitivity}
+
+The main result obtained by Huang can be stated as follows:
+
+\begin{theorem}[{\cite[Theorem 1.1]{sensitivity}}] \label{thm:induced-subgraphs}
+    Let $n \in \N$, and let $H$ be an induced subgraph of the hypercube $Q_n$ on $2^{n - 1} + 1$ vertices. 
+    Then $\Delta(H) \ge \sqrt{n}$. 
+\end{theorem}
+
+\begin{remark}
+    The vertices of $Q_n$ with an even number of $1$-entries form an independent set in $Q_n$, and hence an induced subgraph with maximum degree $0$.
+    The above theorem implies that for any induced subgraph with only one more vertex, the maximum degree jumps to at least $\sqrt{n}$.
+
+    On the other hand, Chung, Füredi, Graham, and Seymour \cite{inducedsubgraphsofthecube} constructed an induced subgraph of $Q_n$ on $2^{n - 1} + 1$ vertices with maximum degree at most $\left \lceil \sqrt{n} \right \rceil$, so the bound of the theorem is sharp.
+\end{remark}
+
+Note that the theorem implies statement (i) of Theorem \ref{thm:sensitivity-equivalence}.
+First, the lower bound on the maximum degree holds for all induced subgraphs of size at least $2^{n - 1} + 1$, as the maximum degree cannot decrease when more vertices are added.
+Secondly, if $H$ is an induced subgraph of $Q_n$ with $|H|\; \ne 2^{n - 1}$, then either $H$ or $Q_n - H$ has at least $2^{n - 1} + 1$ vertices, and hence maximum degree at least $\sqrt{n}$.
+As a consequence, we immediately have the following corollary.
+
+\begin{corollary} \label{cor:sf-deg}
+    For any Boolean function $f$, we have 
+    \begin{equation*}
+        s(f) \ge \sqrt{\deg(f)}.
+    \end{equation*}
+\end{corollary}
+
+Combining the inequalities from Corollary \ref{cor:sf-deg} and Theorem \ref{thm:bs-lt-deg}, this confirms the Sensitivity Conjecture.
+
+\begin{theorem}[Sensitivity Theorem]
+    For any Boolean function $f$,
+    \begin{equation*}
+        bs(f) \le s(f)^4.
+    \end{equation*}
+\end{theorem}
+
+\begin{remark}
+    It is not known whether the exponent $4$ on the right-hand side is optimal. 
+    However, Ambainis and Sun \cite{newseparation} constructed Boolean functions $f$ with $bs(f) = \frac{2}{3} s(f)^2 - \frac{1}{3} s(f)$, showing that there is at least a quadratic separation between block sensitivity and sensitivity.
+\end{remark}
+
+We are now going to present Huang's proof of Theorem \ref{thm:induced-subgraphs}.
+Consider the sequence $(A_n)_{n \in \N}$ of $2^n \times 2^n$ matrices defined as follows:
+\begin{equation*}
+    A_1 = \begin{bmatrix}
+        0 & 1 \\ 1 & 0
+    \end{bmatrix}, \ \ \ 
+    A_{n + 1} = \begin{bmatrix}
+        A_n & I_n \\ I_n & -A_n
+    \end{bmatrix}.
+\end{equation*}
+
+Recalling our discussion of the hypercube in Example \ref{ex:special_spectra}, we see that by flipping every ($-1$) entry of $A_n$ to $1$, we obtain precisely the adjacency matrix of $Q_n$. 
+In other words, the matrix $A_n$ is a signed adjacency matrix of $Q_n$, which means that $A_n$ is symmetric, $(A_n)_{ij} = \pm 1$ whenever there is an edge between $i$ and $j$, and $(A_n)_{ij} = 0$ otherwise. 
+
+The matrices $A_n$ have the following nice property:
+
+\begin{lemma} \label{lem:hypercube-matrices}    
+    The matrices $A_n$ have the eigenvalues $\pm \sqrt{n}$, both with multiplicity $2^{n - 1}$.
+\end{lemma}
+
+\begin{proof}
+    We claim that $A_n^2 = nI$ for all $n \in \N$. 
+    This can be seen by induction.
+    For $n = 1$, we have $A_1 ^2 = I$, so assume that the equality holds for a fixed $n$. 
+    Then 
+    \begin{equation*}
+        A_{n + 1}^2 
+        = \begin{bmatrix}
+            A_n & I \\ I & -A_n
+        \end{bmatrix}^2
+        = \begin{bmatrix}
+            A_n ^2 + I & 0 \\
+            0 & A_n^2 + I
+        \end{bmatrix}
+        = (n + 1)I.
+    \end{equation*}
+    All eigenvalues of $nI$ are $n$, so the eigenvalues of $A_n$ must be $\sqrt{n}$ or $-\sqrt{n}$.
+    Since $\tr A_n = 0$, both have to occur with equal multiplicity, that is, with multiplicity $2^{n - 1}$.
+\end{proof}
+
+The next lemma generalises the fact that the largest eigenvalue of the adjacency matrix of a graph is not larger than its maximum degree. 
+
+% Let $H$ be a graph, and let $A$ be a symmetric matrix whose rows and columns are indexed by $V(H)$. 
+% We say that $A$ \textit{represents} the graph $H$ if for all $u, v \in V(H)$, $A_{uv} \ne 0$ if and only if $uv \in E(H)$.
+% The next lemma generalizes the fact that the largest eigenvalue of the adjacency matrix of a graph is not larger than its maximum degree. 
+
+\begin{lemma} \label{lem:maxdeg-sensitivity}
+    Let $H$ be a graph on $m$ vertices.
+    Suppose $A$ is a symmetric matrix with entries in $\{-1, 0, 1\}$ whose rows and columns are indexed by $V(H)$, such that $A_{vw} = 0$ whenever $v$, $w$ are non-adjacent in $H$.
+    Then
+    \begin{equation*}
+        \Delta(H) \ge \lambda_1(A).
+    \end{equation*}
+\end{lemma}
+
+\begin{proof}
+    Let $\lambda_1 := \lambda_1(A)$, and let $\bm{v}$ be a corresponding eigenvector. 
+    Without loss of generality, assume that $\bm{v}_1$ is the entry of $\bm{v}$ with the largest absolute value.
+    Then 
+    \begin{equation*}
+        |\lambda_1 \bm{v}_1| \; = \big |(A \bm{v})_1 \big| \; = \;\left | \sum \limits_{i \sim 1}  A_{1, i} \bm{v}_i \right| \; 
+            \le \;\sum \limits_{i \sim 1} \underbrace{|A_{1, i}|}_{\le 1} \underbrace{| \bm{v}_i |}_{\le |\bm{v}_1|} \;\le \Delta(H) |\bm{v}_1|,
+    \end{equation*}
+    and therefore, $|\lambda_1|\; \le \Delta(H)$.
+\end{proof}
+
+Now we have all the tools to prove Huang's main theorem.
+\begin{proof}[Proof of Theorem \ref{thm:induced-subgraphs}]
+    Consider again the sequence $(A_n)_{n \in \N}$ of matrices defined above.
+    Let $H$ be a $(2^{n - 1} + 1)$-vertex induced subgraph of $Q_n$, and let $A_H$ be the corresponding principal submatrix of $A_n$. 
+    Note that $H$ and $A_H$ satisfy the conditions of Lemma \ref{lem:maxdeg-sensitivity}.
+    
+    We know from Lemma \ref{lem:hypercube-matrices} that 
+    \begin{equation*}
+        \lambda_1 (A_n) = \dots = \lambda_{2^{n - 1}}(A_n) = \sqrt{n}.
+    \end{equation*}
+    By the Cauchy interlacing theorem, it follows that
+    \begin{equation*}
+        \lambda_1 (A_H) \ge \lambda_{2^{n - 1}} (A_n) = \sqrt{n},
+    \end{equation*}
+    since $A_H$ is a $(2^{n - 1} + 1) \times (2^{n - 1} + 1)$ submatrix of $A_n$.
+    Using Lemma \ref{lem:maxdeg-sensitivity}, we conclude that
+    \begin{equation*}
+        \Delta(H) \ge \lambda_1 (A_H) \ge \sqrt{n},
+    \end{equation*}
+    which completes the proof.
+\end{proof}
+
+We end this chapter with an interesting observation about Huang's signing of the adjacency matrix.
+
+\begin{remark}
+    The matrices $A_n$ ($n \in \N)$ are optimal among all signed adjacency matrices of $Q_n$ in the sense that they maximise $\lambda_{2^{n - 1}}$.
+    This is a consequence of Hadamard's inequality:
+    For any matrix $M \in \C^{m \times m}$ whose column vectors are denoted by $\bm{v}_1, \dots, \bm{v}_m$, Hadamard's inequality states that
+    \begin{equation*}
+        |\det M|\; \le \prod \limits_{i = 1}^m \| \bm{v}_i\|.
+    \end{equation*}
+    A proof can be found in \cite[(9.66)]{linearalgebradoneright}, for example.
+
+    Now consider an arbitrary signed adjacency matrix $B$ of $Q_n$, that is, a symmetric $2^n \times 2^n$ matrix with $B_{ij} = \pm 1$ whenever $ij \in E(Q_n)$, and $B_{ij} = 0$ otherwise.
+    Each column $\bm{v}$ of $B$ has precisely $n$ entries that are $\pm 1$ and thus satisfies $\|\bm{v}\|\; = \sqrt{n}$.
+    From Hadamard's inequality, we infer that
+    \begin{equation*}
+        |\det B |\; \le \sqrt{n}^{2^n}.
+    \end{equation*}
+    Let $\lambda_1, \dots, \lambda_{2^n}$ denote the eigenvalues of $B$, and recall that 
+    \begin{equation*}
+        \det B = \prod_{i = 1}^{2^n} \lambda_i.
+    \end{equation*}
+    Suppose $B$ could be chosen such that $\lambda_{2^{n - 1}} > \sqrt{n}$. 
+    Since $Q_n$ is bipartite, the spectrum of $B$ is symmetric about $0$. 
+    Therefore, we have $\lambda_{2^{n - 1} + 1} < -\sqrt{n}$ and hence $|\lambda_i|\; > \sqrt{n}$ for all $i$.
+    But this implies
+    \begin{equation*}
+        |\det B|\; = \prod \limits_{i = 1}^{2^n} | \lambda_i |\; > \sqrt{n}^{2^n}, 
+    \end{equation*}
+    contradicting Hadamard's inequality.
+    We conclude that $\lambda_{2^{n - 1}}$ can be at most $\sqrt{n}$, and equality holds if and only if the spectrum of $B$ is equal to that of $A_n$.
+\end{remark}

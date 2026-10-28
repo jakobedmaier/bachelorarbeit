@@ -1,0 +1,1012 @@
+\chapter{Fundamentals}
+
+\section{Basic concepts of graph theory}
+In this section, we formally introduce the basic concepts of graph theory, mostly following the terminology used in \cite{diestel}.
+
+\begin{definition}
+    An \textit{(undirected) graph} is a pair $G = (V, E)$, where $V$ is a non-empty finite set and $E \subseteq {\binom{V}{2}}$ is a set of 2-element subsets of $V$.
+    The elements of $V$ are the \textit{vertices} of $G$, and the elements of $E$ are its \textit{edges}. 
+    
+    A vertex $x$ is \textit{incident} with an edge $e$ if $x \in e$. 
+    For an edge $e = \{v, w\}$ we usually just write $vw$ (or $wv$). We say that $e$ \textit{joins} the vertices $v$ and $w$, and $v, w$ are its \textit{ends} or \textit{endvertices}. 
+    Furthermore, $v, w$ are called \textit{adjacent} or \textit{neighbours}, and we occasionally denote that by $v \sim w$.
+
+    For any graph $G$ we refer to its vertex set as $V(G)$ and to its edge set as $E(G)$. The number of vertices of a graph $G$ is called its \textit{order}, denoted by $|G|\;:= |V(G)|$. The number of edges is denoted by $e(G) := |E(G)|$.
+\end{definition}
+
+Unless explicitly stated, all graphs considered in this thesis are undirected. 
+For a directed graph $G$, the definition is essentially the same as for undirected graphs except that $E \subseteq V^2$, i.e. edges are given an ordering and loops are allowed. 
+An edge $e = (x, y)$ in $G$ is directed \textit{from} $x$ \textit{to} $y$; $x$ is called its \textit{tail}, and $y$ its \textit{head}.
+
+
+\begin{example}
+    Graphs are typically displayed by drawing a dot for every vertex and connecting adjacent vertices by a line.
+    For most purposes, the positioning of the dots and the shape of the lines are not considered important. 
+    The relevant information is just which vertices are connected by an edge.
+    
+    \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}
+            % Define the vertices with manual positions
+            \mynode (v1) at (0, 0) [below left] {};
+            \mynode (v2) at (1.5, 0.25) {};
+            \mynode (v3) at (3, 0) {};
+            \mynode (v4) at (-0.5, 1) {};
+            \mynode (v5) at (3, 1) {};
+            \mynode (v6) at (0.5, 2) {};  % This can be outside for clarity
+            \mynode (v7) at (2, 2) {};  % This can be outside for clarity
+            
+            \node at (v1) [below left] {1};
+            \node at (v2) [right  = 0.1cm] {2};
+            \node at (v3) [below right] {3};
+            \node at (v4) [left  = 0.1cm] {4};
+            \node at (v5) [right = 0.1cm] {5};
+            \node at (v6) [above  = 0.1cm] {6};
+            \node at (v7) [above right] {7};
+        
+            % Draw the edges
+            \draw (v6) -- (v5);
+            \draw (v1) -- (v2);
+            \draw (v2) -- (v7);
+            \draw (v7) -- (v1);
+            \draw [-] (v1) .. controls (1.5, -0.75) .. (v3); % Curved line
+        \end{tikzpicture}
+        \captionsetup{justification=centering, margin=2cm}
+        \caption{Graph with vertex set $V = \{1, \dots, 7\}$ and edge set $E = \big\{ \{ 1, 2\}, \{ 1, 3\}, \{ 1, 7\}, \{ 2, 7\}, \{ 5, 6\} \big\}$}
+        \label{fig:example-graph}
+    \end{figure}
+\end{example}
+
+The next example introduces special graphs that are frequently used as examples or counterexamples.
+\begin{example} \label{ex:special_graphs}
+    \begin{enumerate}
+        \item[(a)] The graph $K_n$ on $n$ vertices in which all vertices are pairwise adjacent is called the \textit{complete graph} of order $n$.
+
+        \begin{figure}[H]
+            \centering
+            \begin{tikzpicture}
+                % Define the vertices
+                \foreach \i in {1, 2, 3, 4, 5} {
+                    \mynode (v\i) at ({360/5 * (\i - 1) + 90} : 1.5) {};
+                }
+            
+                % Draw the edges to form the cycle
+                \draw (v1) -- (v2);
+                \draw (v1) -- (v3);
+                \draw (v1) -- (v4);
+                \draw (v1) -- (v5);
+                \draw (v2) -- (v3);
+                \draw (v2) -- (v4);
+                \draw (v2) -- (v5);
+                \draw (v3) -- (v4);
+                \draw (v3) -- (v5);
+                \draw (v4) -- (v5);
+                \draw (v5) -- (v1);
+            \end{tikzpicture}
+    
+            \caption{The complete graph $K_5$}
+            \label{fig:complete-graph}
+        \end{figure}
+
+        \item[(b)] The \textit{path} $P_n$ of length $n$ is a graph of the form 
+        \begin{align*}
+            V(P_n) = \{x_0, x_1, \dots, x_n\}, && E(P_n) = \{x_0 x_1,\, x_1 x_2,\, \dots,\, x_{n - 1} x_n\} .
+        \end{align*}
+        The vertices $x_0$ and $x_n$ are called the \textit{ends} of the path, $x_1, \dots, x_{n - 1}$ its \textit{inner vertices}. 
+
+        \item[(c)] The \textit{cycle} $C_n$ of length $n$ is a graph of the form
+        \begin{align*}
+            V(C_n) = \{x_1, x_2, \dots, x_n\}, && E(C_n) = \{x_1 x_2,\, x_2 x_3,\, \dots,\, x_{n - 1} x_n,\, x_n x_1\} .
+        \end{align*}
+
+        \item[(d)] The $n$-dimensional \textit{hypercube} $Q_n$ has the vertex set $V(Q_n) = \{ 0, 1 \}^n$, with two vertices being neighbours if they differ in exactly one coordinate.
+        
+    \end{enumerate}
+\end{example}
+
+Two graphs are defined as equal if and only if they have the same vertex set and the same edge set. 
+While this is a completely natural and reasonable definition, it is also quite restrictive: of course, renaming vertices does not really change the internal structure of a graph. 
+This motivates the following definition:
+
+\begin{definition}
+    Let $G, G'$ be two graphs. An \textit{isomorphism} (from $G$ to $G'$) is a bijection $\varphi: V(G) \rightarrow V(G')$ satisfying 
+    \begin{equation*}
+        \varphi(x) \varphi(y) \in E(G') \ \Longleftrightarrow  \ xy \in E(G)
+    \end{equation*}
+    for all $x, y \in V(G)$. If such an isomorphism exists, $G$ and $G'$ are \textit{isomorphic}, and we write $G \cong G'$.
+\end{definition}
+
+Graph isomorphism defines an equivalence relation on the class of all graphs. 
+Informally speaking, if two graphs are isomorphic, they are equal "up to labelling". 
+Most of the time, we are interested in properties of graphs that do not depend on the names of the vertices and do not distinguish between isomorphic graphs.
+Therefore, it is justified, for example, to speak of \textit{the} complete graph on $n$ vertices.
+
+\begin{definition}
+    Let $G$ be a graph. 
+    A graph $H$ is a \textit{subgraph} of $G$ (and $G$ a \textit{supergraph}), denoted $H \subseteq G$, if $V(H) \subseteq V(G)$ and $E(H) \subseteq E(G)$. 
+    If $V(H) = V(G)$, $H$ is called \textit{spanning}.
+    A subgraph $H$ of $G$ is called \textit{induced} if
+    \begin{equation*}
+        E(H) = \{ e \in E(G) : e \subseteq V(H) \}.
+    \end{equation*}
+    An induced subgraph is thus determined by its vertex set, and for any $U \subseteq V(G)$ we denote by $G[U]$ the induced subgraph of $G$ with vertex set $U$. 
+
+    Furthermore, for $U \subseteq V(G)$ we denote by $G - U$ the subgraph induced by $V(G) \setminus U$, i.e. the graph obtained from $G$ by deleting the vertices from $U$ (and all edges incident with $U$). 
+    Similarly, if $F$ is a subset of $E(G)$, we denote by $G - F$ the subgraph of $G$ with vertex set $V(G)$ and edge set $E(G) \setminus F$. 
+    If $U = \{ v \}$ or $F = \{ e \}$ we simply write $G - v$, respectively $G - e$.
+    If $H$ is a subgraph of $G$, we usually write $G \setminus H$ rather than $G - V(H)$.
+    Given two non-adjacent vertices $x, y \in V(G)$, $G + xy$ denotes the graph that is obtained from $G$ by adding an edge between $x$ and $y$.
+\end{definition}
+
+\begin{definition}
+    Let $G$ be a graph.
+    A \textit{walk} $W$ (of length $l$) is a sequence $x_0, x_1, \dots, x_l$ of vertices in $G$ such that $x_{i - 1} x_i \in E(G)$ for all $i \in [l]$.
+    We refer to such a walk as an $x_0,x_l$-walk.
+    If $x_0 = x_l$, the walk is \textit{closed}.
+
+    The walk $W$ is a \textit{path} if all its vertices are pairwise distinct. We say that $x_0, x_l$ are its \textit{endvertices}, and $x_0, x_l$ are \textit{linked} by $W$.
+    
+    If additionally $l \ge 2$ and $x_l x_0$ is an edge in $G$, then the sequence $x_0, x_1, \dots, x_l, x_0$ is called a \textit{cycle} (of length $l + 1$).
+\end{definition}
+
+\begin{definition}
+    A graph $G$ is called \textit{bipartite} if there is a partition $V(G) = A \cup B$ of the vertices such that any edge has one endvertex in $A$ and the other in $B$.
+\end{definition}
+
+Bipartite graphs are exactly those graphs that do not contain a cycle of odd length (see \cite[Theorem I.4]{bollobas}).
+
+\begin{example}
+    The \textit{complete bipartite graph} $K_{m,n}$ is a bipartite graph with partition $V(K_{m, n}) = A \cup B$, $|A|\;=m, |B|\;=n$ where any vertex of $A$ is adjacent to any in $B$.
+    That means
+    \begin{equation*}
+        E(K_{m,n}) = \{ ab : a \in A, b \in B \}.
+    \end{equation*}
+\end{example}
+
+\begin{definition}
+    Let $G$ be a graph. Given vertices $x$ and $y$, their distance $\dist_G (x, y)$ is the length of a shortest $x,y$-path in $G$.
+    If no such path exists, then $\dist_G (x, y) := \infty$.
+
+    A graph $G$ is \textit{connected} if any two vertices $x, v \in V(G)$ are linked by an $x,y$-path \mbox{in $G$}.
+    A maximal connected subgraph of $G$ is called a \textit{(connected) component}. 
+    If a graph $G$ has components $C_1, \dots, C_s$, we also say that $G$ is the disjoint union of its components and write $G = C_1 + \dots + C_s$.
+\end{definition}
+
+\begin{definition}
+    A connected graph $G$ without any cycles is called a \textit{tree}. 
+    A \textit{forest} is a graph whose components are trees.
+\end{definition}
+
+\begin{proposition}
+        Let $G$ be a graph. The following are equivalent: 
+    \begin{enumerate}
+        \item $G$ is a tree.
+        \item $G$ is a minimal connected graph, i.e., $G$ is connected, but $G - xy$ is disconnected for every edge $xy \in E(G)$. 
+        \item $G$ is a maximal acyclic graph, i.e., $G$ does not contain any cycles, but for any two nonadjacent vertices $x, y \in V(G)$, $G + xy$ does contain a cycle.
+        \item For any two vertices $x, y \in V(G)$, there is a unique $x, y$-path in $G$.
+    \end{enumerate}
+\end{proposition}
+
+\begin{proof}
+    See \cite[Theorems I.5 and I.6]{bollobas}.
+\end{proof}
+
+\begin{corollary}
+    Every connected graph contains a spanning tree (i.e. a spanning subgraph that is a tree).
+\end{corollary}
+
+% \begin{proof}
+%     Every minimal connected spanning subgraph of $G$ is a spanning tree.
+% \end{proof}
+
+\begin{definition}
+    Let $G$ be a graph. 
+    For any vertex $v$, the set of neighbours of $v$ is denoted by $N(v) = N_G(v)$.
+    Similarly, for any subset $A \subseteq V(G)$, $N_G(A) := \bigcup_{v \in A} N_G(v)$ denotes the neighbourhood of $A$ in $G$.
+        
+    The \textit{degree} of a vertex $v$ is defined as \mbox{$d(v) = d_G(v) := |N_G(v)|$}, or equivalently as the number of edges incident with $v$.
+    A vertex of degree $0$ is \textit{isolated}.
+
+    The \textit{minimum degree} of a vertex in $G$ is denoted by $\delta(G)$,
+    the \textit{maximum degree} \mbox{as $\Delta(G)$}.
+    The \textit{average degree} of $G$ is defined as 
+    \begin{equation*}
+        \bar{d} (G) := \frac{1}{|V(G)|} \sum \limits_{v \in V(G)} d_G (v).
+    \end{equation*}
+    Clearly, $\delta (G) \le \bar{d} (G) \le \Delta (G)$. 
+    A graph in which every vertex has degree $d$ is called $d$-\textit{regular}.    
+\end{definition}
+
+The next proposition relates the number of edges with the vertex degrees.
+\begin{proposition}
+    For every graph $G$, 
+    \begin{equation*}
+        2 e(G) = \sum_{v \in V(G)} d_G(v).
+    \end{equation*}
+\end{proposition}
+
+\begin{proof}
+    The right-hand side counts every edge twice, namely for both of its endvertices.
+\end{proof}
+
+Besides the subgraph relation, the minor relation is another important structural containment relation between two graphs.
+\begin{definition}
+    Let $G, H$ be graphs. The graph $H$ is a \textit{minor} of $G$ if for each vertex $x \in V(H)$ there exists a subset $V_x \subseteq V(G)$ such that the following holds:
+    \begin{enumerate}
+        \item $V_x \cap V_y = \emptyset$ for distinct $x, y \in V(H)$.
+        \item $G[V_x]$ is connected for any $x \in V(H)$.
+        \item For each edge $xy$ in $H$ there exists an edge in $G$ joining $V_x$ and $V_y$.
+    \end{enumerate}
+    The sets $V_x$ are called \textit{branch sets}.
+\end{definition}
+
+The minor relation defines a partial ordering on the class of all (finite) graphs. 
+Observe that a subgraph $H$ of a graph $G$ is also its minor:
+In this case, the branch sets can simply be chosen as $V_x = \{x\}$ for each $x \in V(H)$.
+Figure \ref{fig:example-minor} illustrates the above definition.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+
+        % Draw the shapes with a light grey background
+        \filldraw[fill=gray!30, draw=black, dashed] (0.25, 0.25) circle [radius=0.6];
+        \filldraw[fill=gray!30, draw=black, dashed] (3, 0.25) ellipse [x radius=0.4, y radius=0.6];
+        \filldraw[fill=gray!30, draw=black, dashed] (0.2, 2.8) circle [radius=0.6];
+        \filldraw[fill=gray!30, draw=black, dashed] (3, 3) circle [radius=0.3];
+
+        
+        % Define the vertices with manual positions
+        \mynode (v1) at (0, 0) {};
+        \mynode (v2) at (0, 0.5) {};
+        \mynode (v3) at (0.5, 0.5) {};
+        \mynode (v4) at (0.5, 0) {};
+        \mynode (v5) at (3, 0) {};
+        \mynode (v6) at (3, 0.5) {};
+        \mynode (v7) at (3, 3) {};
+        \mynode (v8) at (4, 3) {};
+        \mynode (v9) at (0, 2.5) {};
+        \mynode (v10) at (0, 3) {};
+        \mynode (v11) at (0.5, 3) {};
+
+        \mynode (v12) at (-1.5, 1.5) {};
+    
+        % Draw the edges
+        \draw (v1) -- (v2);
+        \draw (v2) -- (v3);
+        \draw (v3) -- (v4);
+        \draw (v4) -- (v1);
+        \draw[very thick] (v3) -- (v7);
+        \draw[very thick] (v4) -- (v5);
+        \draw (v5) -- (v6);
+        \draw[very thick] (v6) -- (v7);
+        \draw (v7) -- (v8);
+        \draw (v9) -- (v10);
+        \draw (v10) -- (v11);
+        \draw (v11) -- (v9);
+        \draw[very thick] (v9) -- (v2);
+        \draw[very thick] (v11) -- (v7);
+        \draw[very thick] (v9) -- (v6);
+
+        \draw (v12) -- (v9);
+        \draw (v12) -- (v1);
+        \draw (v12) -- (v10);
+    \end{tikzpicture}
+    \captionsetup{justification=centering, margin=2cm}
+    \caption{A graph with a $K_4$-minor}
+    \label{fig:example-minor}
+\end{figure}
+
+% An immediate consequence is the so-called Handshaking lemma: 
+% \begin{corollary}
+%     In every graph, the number of vertices with odd degree is even.
+% \end{corollary}
+
+\begin{definition}
+    An \textit{independent set} in a graph $G$ is a subset $U \subseteq V(G)$ of the vertices of $G$ none of which are adjacent. 
+    The largest size of an independent set in $G$ is called its \textit{independence number} and is denoted by $\alpha(G)$.
+
+    Contrarily, a \textit{clique} in $G$ is a subset $Q \subseteq V(G)$ such that any two vertices in $Q$ are adjacent.
+    The largest size of a clique in $G$ is called its \textit{clique number}, denoted $\omega (G)$.
+\end{definition}
+
+It is a central activity in graph theory to find sufficient conditions for the occurrence of certain substructures in a graph.
+Ramsey's theorem asserts that any graph on sufficiently many vertices contains either a large clique or a large independent set.
+
+\begin{theorem}[Ramsey's theorem] \label{thm:ramsey}
+    Let $s, t$ be positive integers. 
+    Then there exists a number $R = R(s, t)$ such that any graph $G$ with at least $R$ vertices contains either a clique of size $s$ or an independent set of size $t$.
+\end{theorem}
+
+A proof can be found in \cite[Theorem VI.1]{bollobas}, for example.
+
+\section{The matrices associated with a graph}
+    \label{section:matrices}
+    
+We now introduce some of the most prominent matrices studied in spectral graph theory.
+Throughout this section, let $G$ be a graph with vertex set $V(G) = \{v_1, \dots, v_n\}$.
+The graph $G$ can be represented naturally by its adjacency matrix.
+
+\begin{definition}
+    The \textit{adjacency matrix} $A = A_G$ of $G$ is the symmetric $(n \times n)$ matrix defined by
+    \begin{equation*}
+        A_{ij} = \left\{\begin{array}{ll}
+            1, & v_i v_j \in E(G) \\
+            0, & \text{otherwise}
+        \end{array} \right. .
+    \end{equation*}
+\end{definition}
+
+\begin{remark}
+    In spectral graph theory, it is often convenient to view vectors in $\R^n$ as functions $V(G) \rightarrow \R$, i.e. as vectors in $\R^{V(G)}$.
+    Given such a vector $\bm{x}$, we will for the most part simply write $\bm{x}_v$ for the value of $\bm{x}$ at $v$ rather than using integer indices. 
+    Similarly, we think about the adjacency matrix $A$ of $G$ as a matrix with rows and columns indexed by $V(G)$, and we write $A_{vw}$ for the entry corresponding to the vertices $v$ and $w$.
+    The adjacency matrix then defines a linear map $\R^{V(G)} \rightarrow \R^{V(G)}$.
+    When we multiply a vector $\bm{x}$ to the adjacency matrix, we obtain
+    \begin{equation*}
+        (A \bm{x})_v = \sum \limits_{w \sim v} \bm{x}_w,
+    \end{equation*}
+    which means that the resulting value at a vertex $v$ is the sum of the values of $\bm{x}$ at the neighbours \mbox{of $v$}.
+\end{remark}
+
+The next proposition states that the powers of the adjacency matrix encode the number of walks of a given length.
+
+\begin{proposition} \label{prop:count-walks}
+    Let $m$ be a nonnegative integer. 
+    The entry $(A^m)_{vw}$ is the number of walks of length $m$ from $v$ to $w$. 
+    In particular, $(A^2)_{vv}$ is the degree of the vertex $v$, and $\tr A^2 = 2 e(G)$.
+\end{proposition}
+
+\begin{proof}
+    We use induction on $m$. For $m = 0$ we have $A^0 = I$, and the statement is true. (Note that a walk of length 0 consists of a single vertex.)
+    Now suppose the claim holds for a fixed $m \in \N_0$.
+    Then
+    \begin{equation*}
+        (A^{m + 1})_{vw} = \sum \limits_{u \in V(G)} (A^m)_{vu} \cdot A_{uw}.
+    \end{equation*}
+    By the induction hypothesis, $(A^m)_{vu}$ equals the number of $v, u$-walks of length $m$. 
+    Furthermore, $A_{uw} = 1$ if and only if there is an edge from $u$ to $w$.
+    Hence $(A^{m + 1})_{vw}$ counts the number of $v, u$-walks of length $m$ joined by an edge $u w$, which provides exactly the number of $v, w$-walks of length $m + 1$.
+\end{proof}
+
+% \begin{definition}
+%     The \textit{incidence matrix} $B = B_G$ of $G$ is the $(n \times m)$-matrix defined by
+%     \begin{equation*}
+%         B_{ij} = 
+%         \begin{cases}
+%             1,\; v_i \in e_j \\
+%             0,\; \text{otherwise}
+%         \end{cases}.
+%     \end{equation*}
+% \end{definition}
+
+% By the definition of the matrix multiplication we have the following connection between the adjacency matrix and the incidence matrix of $G$.
+% \begin{proposition}
+%     $B B^T = A + D$, 
+%     where $D$ is the diagonal matrix with $D_{ii} = d_G(v_i)$.
+% \end{proposition}
+
+Another important matrix that arises in the context of spectral graph theory is the Laplace matrix of $G$.
+\begin{definition}
+    The \textit{Laplace matrix} or \textit{Laplacian} $L = L_G$ of $G$ is defined by $L = D - A$, where $D$ is the degree diagonal matrix of $G$, i.e. the diagonal matrix with $D_{vv} = d(v)$. 
+    Hence, the entries of the Laplace matrix are given by
+    \begin{equation*}
+        L_{vw} = \left\{\begin{array}{ll}
+            d(v),& v = w \\
+            -1, & vw \in E(G) \\
+            0,& \text{otherwise}
+        \end{array} \right. .
+    \end{equation*}
+\end{definition}
+
+\begin{definition}
+    An \textit{orientation} of $G$ is the assignment of a direction to every edge, i.e., any undirected edge $e = \{x, y \}$ is replaced by a directed edge $(x, y)$ (or $(y, x)$). 
+
+    Fix an orientation of $G$. The \textit{directed incidence matrix} $N = N_G$ of $G$ with respect to the given orientation is the ($|V(G)| \times |E(G)|$) matrix defined by
+    \begin{equation*}
+        N_{ve} = \left\{\begin{array}{ll}
+            1,& v \text{ is the head of } e \\
+            -1, & v \text{ is the tail of } e \\
+            0,& \text{otherwise}
+        \end{array} \right. ,
+    \end{equation*}
+    where the rows are indexed by the vertices and the columns are indexed by the edges \mbox{of $G$}.
+\end{definition}
+
+\begin{proposition} \label{prop:laplacian-quadratic-form}
+    Let $N$ denote the directed incidence matrix of $G$ w.r.t. to some orientation. 
+    Then $L = N N^T$, and for any vector $\bm{v} \in \R^{V(G)}$,
+    \begin{equation*}
+        \bm{v}^T L \bm{v} = \sum \limits_{x \sim y} (\bm{v}_x - \bm{v}_y)^2,
+    \end{equation*}
+    where the sum is over all edges $xy \in E(G)$. 
+    In particular, $L$ is positive semidefinite.
+\end{proposition}
+
+\begin{proof}
+    By the definition of the matrix multiplication, 
+    \begin{equation*}
+        (N N^T)_{xy} = \sum \limits_{e \in E(G)} N_{xe} N_{ye}.
+    \end{equation*}
+    For the summands we have 
+    \begin{equation*}
+        N_{xe} N_{ye} = \left\{\begin{array}{ll}
+            1, & x = y \text{ and } x \in e \\
+            -1, & e = \{ x, y \} \\
+            0, & \text{otherwise }
+        \end{array} \right. .
+    \end{equation*}
+    Hence, 
+    \begin{equation*}
+         (N N^T)_{xy} = \left\{\begin{array}{ll}
+            d_G(x), & x = y \\
+            -1, & x \sim y \\
+            0, & \text{otherwise}
+        \end{array} \right \} = L_{xy}.
+    \end{equation*}
+    Now let $\bm{v}$ be a vector. Then for any edge $e = \{x, y\}$, $(N^T \bm{v})_e = \pm (\bm{v}_x - \bm{v}_y)$.
+    It follows that 
+    \begin{equation*}
+        \bm{v}^T L \bm{v} = (\bm{v}^T N) (N^T \bm{v}) = \sum \limits_{e \in E(G)} (N^T \bm{v})_e = \sum \limits_{x \sim y} (\bm{v}_x - \bm{v}_y)^2.
+    \end{equation*}
+\end{proof}
+
+There is an abundance of literature about the Laplace matrix of a graph and its eigenvalues (for an introduction, see e.g. \cite{brouwerhaemers} or \cite[Chapter 13]{godsilroyle}).
+In this thesis, we will focus on the properties of the adjacency matrix of a graph, though the Laplace matrix will play a part in the proof of Cheeger's inequality (\mbox{Theorem \ref{thm:cheeger}}).
+
+\section{The spectrum of a graph}
+Let $G$ be an undirected graph with $n$ vertices. 
+Since the adjacency matrix $A_G$ is symmetric, the spectral theorem of linear algebra states that all its $n$ eigenvalues are real and there exists an orthonormal basis of $\R^{V(G)}$ consisting of eigenvectors of $A_G$. 
+Furthermore, the algebraic and geometric multiplicities of each eigenvalue coincide, so we will simply speak about \textit{multiplicity}. 
+
+\begin{definition}
+    The \textit{spectrum} of $G$ is defined as the spectrum of $A_G$, that is, the set of all eigenvalues of $A_G$ together with their multiplicities.
+    The \textit{spectral radius} of $G$ is the maximum absolute value of an eigenvalue of $A_G$.
+\end{definition}
+
+\begin{remark}
+    While the adjacency matrix $A_G$ is determined by the ordering of the vertices, the spectrum of $G$ is independent of the representation chosen. 
+    Indeed, any two adjacency matrices $A$, $A'$ of $G$ are similar because $A' = P^T AP$ for some permutation matrix $P \in \{0, 1\}^{n \times n}$ (and $P^T = P^{-1}$).
+\end{remark}
+
+For any eigenvalue $\lambda$ of $A_G$ with a corresponding eigenvector $\bm{x}$, the eigenvalue equation $A_G \bm{x} = \lambda \bm{x}$ can be equivalently stated as 
+\begin{equation*}
+    \lambda \bm{x}_v = \sum \limits_{u \sim v} \bm{x}_u, \ \ v \in V(G).
+\end{equation*}
+In accordance with the definition of the spectrum of $G$, we refer to the eigenvalues and eigenvectors of $A_G$ as the eigenvalues and eigenvectors of $G$.
+Similarly, the characteristic polynomial of $G$, denoted $p_G$, is that of $A_G$. 
+% Since $p_G$ is a polynomial with integer coefficients, the eigenvalues of a graph are totally real algebraic integers. 
+We will denote the eigenvalues of $G$ by $\lambda_1(G), \dots, \lambda_n(G)$, or simply $\lambda_1, \dots, \lambda_n$ if there is no possibility of confusion. 
+By convention, the eigenvalues are always assumed to be in a decreasing order:
+\begin{equation*}
+    \lambda_1 \ge \lambda_2 \ge \dots \ge \lambda_n.
+\end{equation*}
+Recall that the trace of a matrix is equal to the sum of its eigenvalues (counted according to their algebraic multiplicity).
+In a graph $G$ without self-loops, the diagonal entries of $A_G$ are all zero, and therefore 
+\begin{equation*}
+    \sum \limits_{i = 1}^n \lambda_i(G) = \tr A_G = 0.
+\end{equation*}
+
+As already mentioned, $G$ has eigenvectors $\bm{x}_1, \dots, \bm{x}_n$ (such that $A_G \bm{x}_i = \lambda_i \bm{x}_i$) that form an orthonormal basis of $\R^{V(G)}$.
+This gives rise to the \textit{spectral decomposition} 
+\begin{equation*}
+A_G = \sum _{i = 1}^n \lambda_i \bm{x}_i \bm{x}_i ^T
+\end{equation*}
+of $A_G$. 
+To see why this equation holds, let $B = \sum _{i = 1}^n \lambda_i \bm{x}_i \bm{x}_i ^T$. 
+Since $\bm{x}_1, \dots, \bm{x}_n$ is a basis of $\R^{V(G)}$, it suffices to show that $(A_G - B) \bm{x}_j = 0$ for all $j \in [n]$.
+Indeed, we have
+\begin{equation*}
+    (A_G - B) \bm{x}_j = A_G \bm{x}_j - \sum _{i = 1}^n \lambda_i \bm{x}_i \bm{x}_i ^T \bm{x}_j = \lambda_j \bm{x}_j - \lambda_j \bm{x}_j = 0.
+\end{equation*}
+For the second equality, we have used the fact that the $\bm{x}_i$ are orthonormal.
+
+Interestingly, many structural properties of a graph are encoded in its spectrum. 
+Before exploring these connections, we will first consider the spectra of some special graphs. 
+% On this occasion, we quote the spectral mapping theorem for polynomials.
+%
+% \begin{theorem}[Spectral mapping theorem]
+%     Let $A \in \R^{n \times n}$ be a symmetric matrix, and let $\sigma(A)$ denote its spectrum.
+%     Then, for any polynomial $p(X) \in \R[X]$,
+%     \begin{equation*}
+%         \sigma(p(A)) = \{ p(\lambda) : \lambda \in \sigma (A) \}.
+%     \end{equation*}
+% \end{theorem}
+% A proof can be found in \cite[Theorem 7.36]{nairsinghlinearalgebra}, for instance.
+%
+We will denote eigenvalue multiplicities greater than one as superscripts, i.e., the notation $\lambda^{(k)}$ means that the eigenvalue $\lambda$ occurs with multiplicity $k$.
+
+\begin{example} \label{ex:special_spectra}
+    \begin{enumerate}
+        \item[(a)] The empty graph $G = ([n], \emptyset)$ on $n$ vertices has \mbox{spectrum $0^{(n)}$}.
+        \item[(b)] The spectrum of the complete graph $K_n$ is $(n - 1), -1^{(n - 1)}$. 
+            Indeed, $K_n$ has the adjacency matrix $A = J - I$, and $J$ has spectrum $n, 0^{(n - 1)}$.
+        \item[(c)] The spectrum of the complete bipartite graph $K_{m,n}$ is $\sqrt{mn}, 0^{(m + n - 2)}, -\sqrt{mn}$.
+            To see that, consider the adjacency matrix of $K_{m,n}$, which is of the form
+            \begin{equation*}
+                A = \begin{bmatrix}
+                    0 & J_{m,n} \\ 
+                    J_{n, m} & 0
+                \end{bmatrix}.
+            \end{equation*}
+            As $A$ has rank 2, it has eigenvalue $0$ with multiplicity $m + n - 2$. 
+            Using the eigenvectors
+            \begin{equation*}
+                (\underbrace{\sqrt{n}, \dots, \sqrt{n}}_{m \text{ times}}, \underbrace{\pm \sqrt{m}, \dots, \pm \sqrt{m}}_{n \text{ times}})^T
+            \end{equation*}
+            one can verify that $\pm \sqrt{mn}$ are eigenvalues.
+
+        \item[(d)] The spectrum of the cycle $C_n$ consists of the numbers $2 \cos (\frac{2 \pi k}{n})$, $k = 0, \dots, n-1$.
+            The adjacency matrix of $C_n$ has the form
+            \begin{equation*}
+                A = \begin{bmatrix}
+                    0 & 1 & \dots & 0 & 1 \\
+                    1 & 0 & 1 & & 0 \\ 
+                    \vdots & 1 & 0 & \ddots & \vdots \\ 
+                    0 & &\ddots & \ddots & 1 \\
+                    1 & 0 & \dots & 1 & 0 
+                \end{bmatrix}.
+            \end{equation*}
+            For any $n$-th root of unity $\xi \in \C$, $(1, \xi, \xi^2, \dots, \xi^{n - 1})^T$ is an eigenvector of $A$ for the eigenvalue $\xi + \xi^{-1}$.
+            The $n$-th roots of unity are $e^{2 \pi i k /n}$, $k = 0, \dots, n - 1$, and since $e^{2 \pi i k / n} + e^{-2 \pi i k/n} = 2 \cos (2 \pi k / n)$, we obtain the claimed spectrum.
+
+        \item[(e)] The $n$-dimensional hypercube $Q_n$ has the eigenvalues $n - 2k$ with multiplicity $\binom{n}{k}$, $k = 0, \dots, n$. 
+            We show this inductively. For $n = 1$, we have $Q_1 \cong K_2$, hence the eigenvalues are $\pm 1$ by (b).
+            Now, for a fixed $n$, let $A_n$ denote the adjacency matrix of $Q_n$. 
+            It is not hard to see that $Q_{n + 1}$ has an adjacency matrix of the form 
+            \begin{equation*}
+                A_{n + 1} = \begin{bmatrix}
+                    A_n & I \\ 
+                    I & A_n 
+                \end{bmatrix},
+            \end{equation*}
+            where the $A_n$ blocks correspond to $n$-dimensional subcubes \mbox{of $Q_{n + 1}$}.
+            Let $\bm{v}$ be an eigenvector of $A_n$ for an eigenvalue $\lambda$. Then
+            \begin{equation*}
+                \begin{bmatrix}
+                    A_n & I \\ 
+                    I & A_n 
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \bm{v} \\ \bm{v} 
+                \end{bmatrix}
+                = (\lambda + 1)
+                \begin{bmatrix}
+                    \bm{v} \\\bm{v} 
+                \end{bmatrix}
+            \end{equation*}
+            and 
+            \begin{equation*}
+                \begin{bmatrix}
+                    A_n & I \\ 
+                    I & A_n 
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \bm{v} \\ -\bm{v} 
+                \end{bmatrix}
+                = (\lambda - 1)
+                \begin{bmatrix}
+                    \bm{v} \\ -\bm{v} 
+                \end{bmatrix}.
+            \end{equation*}
+            Thus, an eigenvalue $\lambda$ of $Q_n$ yields eigenvalues $\lambda \pm 1$ of $Q_{n + 1}$.
+            By the induction hypothesis it follows that $Q_{n + 1}$ has eigenvalues 
+            \begin{equation*}
+                n + 1, n - 1, n - 3, \dots, -n - 1.
+            \end{equation*}
+            Since the eigenvectors given above are all linearly independent, the multiplicity of $n + 1 - 2k$ ($k = 0, \dots, n + 1$) is obtained by adding the multiplicities of $n - 2(k - 1)$ and $n - 2k$ as eigenvalues in $Q_n$:
+            \begin{equation*}
+                \binom{n}{k - 1} + \binom{n}{k} = \binom{n + 1}{k},
+            \end{equation*}
+            where $\binom{n}{-1} = \binom{n}{n + 1} := 0$. As $\sum_{k = 0}^{n + 1} \binom{n + 1}{k} = 2^{n + 1}$, these are indeed all eigenvalues.
+    \end{enumerate}
+\end{example}
+
+The next proposition tells us that the spectrum of a disconnected graph consists of the spectra of its components.
+\begin{proposition}
+    Let $G$ be a graph with connected components $C_1, \dots, C_s$. 
+    Then the spectrum of $G$ is the union of the spectra of the $C_i$, with multiplicities being added.
+\end{proposition}
+
+\begin{proof}
+    $G$ admits an adjacency matrix of the form
+    \begin{equation*}
+        A = \begin{bmatrix}
+            A_{C_1} & 0 & \dots & 0 \\
+            0 & A_{C_2} & & \vdots \\
+            \vdots & & \ddots & 0 \\
+            0 & \dots & 0 & A_{C_s}
+        \end{bmatrix}.
+    \end{equation*}
+    Hence, the characteristic polynomial of $G$ satisfies $p_G (t) = p_{C_1} (t) \cdot \dots \cdot p_{C_s} (t)$, and the claim follows.
+\end{proof}
+
+It is worth noting that while the spectrum is a graph invariant (i.e., it is the same for isomorphic graphs), graphs are not generally determined by their spectrum.
+Indeed, there exist pairs of graphs that are not isomorphic but share the same spectrum. Such graphs are called \textit{cospectral}. 
+For example, we can infer from Example \ref{ex:special_spectra} that $K_{1, 4}$ and $K_1 + C_4$ both have the spectrum $2, 0^{(3)}, -2$.
+
+\section{Rayleigh quotients}
+Consider a symmetric matrix $A \in \R^{n \times n}$. For any vector $\bm{x} \in \R^n \setminus \{0\}$, the term 
+\begin{equation*}
+    \frac{\bm{x}^T A \bm{x}}{\bm{x}^T \bm{x}}
+\end{equation*}
+is called the \textit{Rayleigh quotient} of $\bm{x}$ with respect to $A$.
+The next theorem tells us that the eigenvalues of a symmetric matrix can be characterised as the maxima (resp. minima) of the Rayleigh quotients over certain subspaces. 
+
+\begin{theorem}[Rayleigh] \label{thm:rayleigh}
+    Let $A \in \R^{n \times n}$ be a symmetric matrix with eigenvalues $\lambda_1 \ge \dots \ge \lambda_n$.
+    Let $\bm{v}_1, \dots, \bm{v}_n$ be orthonormal eigenvectors of $A$ (such that $A \bm{v}_i = \lambda_i \bm{v}_i$).
+    For $k \in [n]$, let $S_k = \langle \bm{v}_1, \dots, \bm{v}_k \rangle$. 
+    Then
+    \begin{equation*}
+        \lambda_k = \min \limits_{\bm{x} \in S_k \setminus \{0 \}} \frac{\bm{x}^T A \bm{x}}{\bm{x}^T \bm{x}} = \min \limits_{\bm{x} \in S_k, \|\bm{x}\| = 1} \bm{x}^T A \bm{x}
+    \end{equation*}
+    and
+    \begin{equation*}
+        \lambda_k = \max \limits_{\bm{x} \in S_{k - 1}^{\perp} \setminus \{0 \}} \frac{\bm{x}^T A \bm{x}}{\bm{x}^T \bm{x}} = \max \limits_{\bm{x} \in S_{k - 1}^{\perp}, \| \bm{x} \| = 1} \bm{x}^T A \bm{x}.
+    \end{equation*}
+    Moreover, a vector $\bm{x}$ attains the maximum (resp. minimum) if and only if $\bm{x}$ is a $\lambda_k$-eigenvector \mbox{of $A$}.
+\end{theorem}
+
+This result is sometimes also called the Courant--Fischer theorem.
+We reserve this name for a related, but slightly different result (see e.g. \cite[Theorem 4.2.6]{matrixanalysis}) and refer to the above as Rayleigh's principle.
+
+% \begin{proof}
+%     Let $\bm{x} \in \R^n, \bm x \ne 0$ and write
+%     \begin{equation*}
+%         \bm x = \sum_{i = 1}^n \alpha_i \bm{v}_i
+%     \end{equation*}
+%     with suitable coefficients $\alpha_i \in \R$. Since the $\bm{v}_i$ are orthonormal eigenvectors, 
+%     \begin{equation*}
+%         \bm{x}^T \bm{x} = \sum_{i = 1}^n \alpha_i^2 \ \ \text{ and } \ \ \bm{x}^T A \bm{x} = \sum_{i = 1}^n \alpha_i^2 \lambda_i.
+%     \end{equation*}
+%     If $\bm{x} \in S_k$, then $\alpha_{k + 1} = \dots = \alpha_n = 0$, hence
+%     \begin{equation*}
+%         \frac{\bm{x}^T A \bm{x}}{\bm{x}^T \bm{x}} = \frac{\alpha_1^2 \lambda_1 + \dots + \alpha_k ^2 \lambda_k}{\alpha_1^2 + \dots + \alpha_k ^2}
+%             \ge \frac{(\alpha_1^2 + \dots + \alpha_k ^2) \lambda_k}{\alpha_1^2 + \dots + \alpha_k ^2} = \lambda_k.
+%     \end{equation*}
+%     Similarly, if $\bm{x} \in S_{k - 1}^{\perp}$, then $\alpha_{1} = \dots = \alpha_{k - 1} = 0$, hence
+%     \begin{equation*}
+%         \frac{\bm{x}^T A \bm{x}}{\bm{x}^T \bm{x}} = \frac{\alpha_k^2 \lambda_k + \dots + \alpha_n ^2 \lambda_n}{\alpha_k^2 + \dots + \alpha_n ^2}
+%             \le \frac{(\alpha_k^2 + \dots + \alpha_n ^2) \lambda_k}{\alpha_k^2 + \dots + \alpha_n ^2} = \lambda_k.
+%     \end{equation*}
+%     In both cases, equality holds if and only $\bm{x}$ is a $\lambda_k$-eigenvector. 
+%     If $\bm{x} \ne 0$, then $\bm{\xi} = \bm{x} / \|\bm{x}\|$ is a unit vector with 
+%     \begin{equation*}
+%         \bm{\xi}^T A \bm{\xi} = \frac{\bm{x}^T A \bm{x}}{\bm{x}^T \bm{x}},
+%     \end{equation*}
+%     so it does not matter whether the optimization is over all nonzero vectors or over unit vectors only.
+% \end{proof}
+
+\begin{proof}
+    We only show the first characterisation, as the other one is completely analogous.
+    Let $\bm{x} \in \R^n \setminus \{ 0 \}$, and expand $\bm{x}$ in the orthonormal basis of eigenvectors of $A$, that is,
+    \begin{equation*}
+        \bm x = \sum_{i = 1}^n \alpha_i \bm{v}_i
+    \end{equation*}
+    with suitable coefficients $\alpha_i \in \R$. Since the $\bm{v}_i$ are orthonormal eigenvectors, 
+    \begin{equation*}
+        \bm{x}^T \bm{x} = \sum_{i = 1}^n \alpha_i^2 \ \ \text{ and } \ \ \bm{x}^T A \bm{x} = \sum_{i = 1}^n \alpha_i^2 \lambda_i.
+    \end{equation*}
+    Assume $\bm{x} \in S_k$. 
+    Then $\alpha_{k + 1} = \dots = \alpha_n = 0$, and hence
+    \begin{equation*}
+        \frac{\bm{x}^T A \bm{x}}{\bm{x}^T \bm{x}} = \frac{\alpha_1^2 \lambda_1 + \dots + \alpha_k ^2 \lambda_k}{\alpha_1^2 + \dots + \alpha_k ^2}
+            \ge \frac{(\alpha_1^2 + \dots + \alpha_k ^2) \lambda_k}{\alpha_1^2 + \dots + \alpha_k ^2} = \lambda_k.
+    \end{equation*}
+    If $\bm{x}$ is a $\lambda_k$-eigenvector, then the above holds with equality.
+    
+    Conversely, if the vector $\bm{x}$ satisfies $\bm{x}^T A \bm{x} / \bm{x}^T \bm{x} = \lambda_k$, we must have $\alpha_i = 0$ for all $i \le k$ with $\lambda_i > \lambda_k$.
+    This implies that $\bm{x}$ is the linear combination of $\lambda_k$-eigenvectors, and therefore a $\lambda_k$-eigenvector itself.
+\end{proof}
+
+The most useful characterisations are summarised in the following corollary.
+\begin{corollary} \label{cor:rayleigh-quotients}
+    Let $A \in \R^{n \times n}$ be a symmetric matrix with eigenvalues $\lambda_1 \ge \dots \ge \lambda_n$ and let $\bm{v}_1$ be a $\lambda_1$-eigenvector. Then
+    \begin{align*}
+        \lambda_1 = \max \limits_{\bm{x} \ne 0} \frac{\bm{x}^T A \bm{x}}{\bm{x}^T \bm{x}}, &&
+        \lambda_2 = \max \limits_{\bm{x} \ne 0, \bm{x} \perp \bm{v}_1} \frac{\bm{x}^T A \bm{x}}{\bm{x}^T \bm{x}}, &&
+        \lambda_n = \min \limits_{\bm{x} \ne 0} \frac{\bm{x}^T A \bm{x}}{\bm{x}^T \bm{x}}.
+    \end{align*}
+\end{corollary}
+
+
+
+% \begin{proof}
+%     Since there is only one zero-dimensional subspace of $\R^n$, namely $S = \{ 0 \}$, we can omit the outer minimum in (\ref{eq:cf2}) for $i = 0$ and obtain the formula for $\lambda_1$.
+%     Similarly, we can just take $S = \R^n$ in (\ref{eq:cf1}) for $i = n$ and obtain the formula for $\lambda_n$.
+    
+%     For $\lambda_2$, we have
+%     \begin{equation*}
+%         \lambda_2 \le \max \limits_{0 \ne x, x \perp v_1} \frac{x^T A x}{x^T x}
+%     \end{equation*}
+%     by (\ref{eq:cf2}). 
+%     For the other direction, let $x_0$ be the maximizer of $\frac{x^T A x}{x^T x}$ among all $x \ne 0, x \perp v_1$. 
+%     Then we can write $x_0 = \sum _{i = 2}^n \alpha_i v_i$ for suitable $\alpha_i \in \R$. Using the orthonormality of the $v_i$ it follows that 
+%     \begin{align*}
+%         x_0^T A x_0 &= \bigg( \sum \limits_{i, j = 2}^n \alpha_i v_i \bigg) A \bigg( \sum \limits_{i = 2}^n \alpha_i v_i \bigg) 
+%             = \bigg( \sum \limits_{i = 2}^n \alpha_i v_i \bigg) \bigg(\sum \limits_{i = 2}^n \alpha_i \lambda_i v_i \bigg) \\
+%         &= \sum_{i = 2}^n \lambda_i \alpha_i^2 \le \lambda_2 \sum_{i = 2}^n  \alpha_i^2 = \lambda_2 \|x_0\|,
+%     \end{align*}
+%     and we conclude
+%     \begin{equation*}
+%         \max \limits_{x \ne 0, x \perp v_1} \frac{x^T A x}{x^T x} = \frac{x_0^T A x_0}{x_0^T x_0} \le \frac{\lambda_2 \|x_0\|}{\|x_0\|} = \lambda_2.
+%     \end{equation*}
+%     This proves the formula for $\lambda_2$.
+% \end{proof}
+
+Using Rayleigh's principle, we can obtain basic information about the magnitude of the largest eigenvalue $\lambda_1$ of a graph.
+\begin{proposition}
+    For every graph $G$, $\bar{d} (G) \le \lambda_1 \le \Delta(G)$.
+    If $G$ is connected, then $\lambda_1 = \Delta(G)$ if and only if $G$ is $\Delta(G)$-regular.
+\end{proposition}
+
+\begin{proof}
+    We follow the proof given in \cite{spielman}.
+    As usual, let $A$ denote the adjacency matrix of $G$.
+    To show the lower bound, consider the Rayleigh quotient of the all-ones vector $\bm{1}$:
+    \begin{equation*}
+        \lambda_1 = \max \limits_{\bm{x} \ne 0} \frac{\bm{x}^T A \bm{x}}{\bm{x}^T \bm{x}} 
+            \ge \frac{\bm{1}^T A \bm{1}}{\bm{1}^T \bm{1}}
+            = \frac{\sum_{u, v} A_{uv}}{n} 
+            = \frac{2 e(G)}{n} = \bar{d} (G).
+    \end{equation*}
+    For the upper bound, let $\bm \psi$ be a $\lambda_1$-eigenvector and let $v \in V(G)$ be a vertex at which $\bm \psi (v)$ is maximal.
+    Without loss of generality, we can assume that $\bm \psi (v) > 0$, otherwise \mbox{consider $-\bm{\psi}$}. 
+    Then 
+    \begin{equation*}
+        \lambda_1 = \frac{(A \bm{\psi})_v}{\bm{\psi}_v} 
+            = \frac{\sum_{u \sim v} \bm{\psi}_u}{\bm{\psi}_v} 
+            = \sum \limits_{u \sim v} \frac{\bm{\psi}_u}{\bm{\psi}_v} 
+            \le \sum \limits_{u \sim v} 1 = d(v) \le \Delta(G). 
+            \tag{$\star$}
+    \end{equation*}
+
+    For the second part of the proposition, assume that $G$ is connected. 
+    If $G$ is $\Delta(G)$-regular, then $A \bm{1} = \Delta(G) \bm{1}$, so $\Delta(G) = \lambda_1$.
+    For the other direction, assume that that ($\star$) holds with equality.
+    It follows that \mbox{$d(v) = \Delta(G)$}, and $\bm{\psi}_u = \bm{\psi}_v$ for every vertex $u$ adjacent to $v$.
+    Hence, in the equation ($\star$) we may replace the vertex $v$ by any of its neighbours $u$ and apply the same reasoning to $u$.
+    By iterating the argument and using that $G$ is connected, we conclude that $d(u) = \Delta(G)$ for all $u \in V(G)$.
+    Thus, $G$ is $\Delta(G)$-regular.
+\end{proof}
+
+Rayleigh's principle together with the spectral decomposition of the adjacency matrix of a graph can also be used to deduce lower and upper bounds on the number of closed walks.
+\begin{lemma} \label{lem:bounding-walks}
+    Let $G$ be a graph, and let $\bm{\psi}$ denote a normalised $\lambda_1$-eigenvector of $G$.
+    For each vertex $v$ and $k \in \N$, the number of closed walks of length $2k$ rooted at $v$, namely $(A^{2k})_{vv}$, can be estimated as follows:
+    \begin{equation*}
+        \bm{\psi}_v^2 \lambda_1 ^{2k} \le (A^{2k})_{vv} \le \lambda_1 ^{2k}.
+    \end{equation*}
+\end{lemma}
+
+\begin{proof}
+    For the first inequality, consider an orthonormal set $\bm{x}_1 = \bm{\psi}, \bm{x}_2, \dots, \bm{x}_n$ of eigenvectors of $G$, and recall the spectral decomposition of $A$: 
+    \begin{equation*}
+        A = \sum \limits_{i = 1}^n \lambda_i \bm{x}_i \bm{x}_i^T.
+    \end{equation*}
+    Since $A^{2k}$ has the eigenvalues $\lambda_i^{2k}$ with the same eigenvectors as $A$, the spectral decomposition for $A^{2k}$ is  
+    \begin{equation*}
+        A^{2k} = \sum \limits_{i = 1}^n \lambda_i^{2k} \bm{x}_i \bm{x}_i^T.
+    \end{equation*}
+    Hence,
+    \begin{equation*}
+        (A^{2k})_{vv} = \sum \limits_{i = 1}^n \lambda_i^{2k} \underbrace{(\bm{x}_i \bm{x}_i^T)_{vv}}_{= \bm{x}_{i, v}^2} \ge \bm{\psi}_v^2 \lambda_1^{2k}.
+    \end{equation*}
+    The second inequality follows directly from Rayleigh's principle: 
+    \begin{equation*}
+        (A^{2k})_{vv} = \bm{e}^T_v A^{2k} \bm{e}_v \le \lambda_1^{2k}.
+    \end{equation*}
+\end{proof}
+
+\section{Interlacing}
+
+Let $0 < m < n$ be integers, and consider two sequences $\lambda_1 \ge \dots \ge \lambda_n$ and $\mu_1 \ge \dots \ge \mu_m$ of real numbers. 
+Following \cite{brouwerhaemers}, we say that the second sequence \textit{interlaces} the first one if 
+\begin{equation*}
+    \lambda_i \ge \mu_i \ge \lambda_{n - m + i}, \ \ i \in [m].
+\end{equation*}
+If $m = n - 1$, these inequalities become
+\begin{equation*}
+    \lambda_1 \ge \mu_1 \ge \lambda_2 \ge \mu_2 \ge \dots \ge \mu_{m} \ge \lambda_{n}.
+\end{equation*}
+The interlacing is \textit{tight} if there exists $k \in \{0, 1, \dots, m \}$ such that 
+\begin{equation*}
+    \lambda_i = \mu_i, \ \ i \in \{ 1, \dots, k\} \ \text{ and } \ \mu_i = \lambda_{n -m + i}, \ \ i \in \{ k + 1, \dots, m\}.
+\end{equation*}
+
+The following is a classical result and a consequence of Rayleigh's principle.
+\begin{proposition}[Cauchy interlacing theorem]
+    Let $A \in \R^{n \times n}$ be a symmetric matrix, and let $B \in \R^{n \times n}$ be a principal submatrix of $A$. 
+    Then the eigenvalues of $B$ interlace those \mbox{of $A$}.
+\end{proposition}
+
+\begin{proof}
+    Without loss of generality, we can assume that $B$ consists of the first $m$ rows and columns \mbox{of $A$}. 
+    (Otherwise permutate the indices of $A$ accordingly, which leaves the spectrum invariant.)
+    Let $\lambda_1 \ge \dots \ge \lambda_n$ denote the eigenvalues of $A$ and let $\bm{v}_1, \dots, \bm{v}_n$ be a corresponding set of orthonormal eigenvectors.
+    Furthermore, let $\mu_1 \ge \dots \ge \mu_m$ denote the eigenvalues of $B$, with respective eigenvectors $\bm{w}_1, \dots, \bm{w}_m$.
+    We have $B = S^T A S$ and $S^T S = I_m$, where 
+    \begin{equation*}
+        S = \begin{bmatrix}
+            I_m \\ 0
+        \end{bmatrix} \in \R^{n \times m}.
+    \end{equation*}
+    Fix $i \in [m]$, and choose a nonzero vector 
+    \begin{equation*}
+        \bm{x} \in \langle \bm{w}_1, \dots, \bm{w}_i \rangle \cap \Big \langle S^T \bm{v}_1, \dots, S^T \bm{v}_{i - 1} \Big \rangle ^\perp.
+    \end{equation*}
+    Such a vector exists because %$\dim \left \langle S^T \bm{v}_1, \dots, S^T \bm{v}_{i - 1} \right \rangle \le i - 1$, and hence
+    \begin{equation*}
+        \dim \langle \bm{w}_1, \dots, \bm{w}_i \rangle + \dim \Big \langle S^T \bm{v}_1, \dots, S^T \bm{v}_{i - 1} \Big \rangle ^\perp \ge i + (m - i + 1) > m.
+    \end{equation*}
+    Then $S \bm x \in \langle \bm{v}_1 \dots, \bm{v}_{i - 1} \rangle^\perp$, and by Rayleigh's principle, it follows that 
+    \begin{equation*}
+        \lambda_i \ge \frac{(S \bm{x})^T A (S\bm{x})}{(S \bm{x})^T (S \bm{x})} 
+            = \frac{\bm{x}^T (S^T A S) \bm{x}}{\bm{x}^T (S^T S) \bm{x}}
+            = \frac{\bm{x}^T B \bm{x}}{\bm{x}^T \bm{x}} \ge \mu_i.
+    \end{equation*}
+    % For the other inequality, consider 
+    % \begin{equation*}
+    %     \bm{x} \in \langle \bm{w}_i, \dots, \bm{w}_m \rangle \cap \Big \langle S^T \bm{v}_{n - m + i + 1}, \dots, S^T \bm{v}_{n} \Big \rangle ^\perp.
+    % \end{equation*}
+    % Then $\bm x \in \langle \bm{w}_1, \dots, \bm{w}_{i - 1} \rangle ^\perp$ and $$S \bm x \in \langle \bm{v}_1 \dots, \bm{v}_{i - 1} \rangle^\perp$$
+    For the other inequality, the same argument carried out on $-A$ and $-B$ yields 
+    \begin{equation*}
+        -\lambda_{n + 1 - k} \ge -\mu_{m + 1 - k},\ \ k \in [m].
+    \end{equation*}
+    Substituting $k = m + 1 - i$, we conclude that $\mu_i \ge \lambda_{n - m + i}$.
+\end{proof}
+
+In graph-theoretic terminology, the Cauchy interlacing theorem translates to:
+\begin{corollary}
+    Let $H$ be an induced subgraph of a graph $G$. Then the eigenvalues of $H$ interlace those of $G$.
+\end{corollary}
+
+\begin{proof}
+    The adjacency matrix $A_H$ of $H$ is a principal submatrix of $A_G$.
+\end{proof}
+
+The following bound on the smallest eigenvalue of a graph is a simple application of interlacing. 
+\begin{proposition}
+    Let $G$ be a graph with at least one edge and smallest \mbox{eigenvalue $\lambda_n$}.
+    If $G$ is the disjoint union of complete graphs, then $\lambda_n = -1$. Otherwise $\lambda_n \le -\sqrt{2}$.
+\end{proposition}
+
+\begin{proof}
+    Recall that the smallest eigenvalue of a complete graph with at least one edge is $-1$, and the spectrum of a disconnected graph is the union of the spectra of its components.
+    Hence, if $G$ is the disjoint union of complete graphs, its smallest eigenvalue \mbox{is $-1$}. 
+    Otherwise, there are (distinct) vertices $x, y, z$ such that $xy, yz \in E(G)$ and $xz \notin E(G)$, i.e., $G$ has an induced $K_{1,2}$.
+    The smallest eigenvalue of $K_{1, 2}$ is $-\sqrt{2}$, and by the Cauchy interlacing theorem we conclude that $-\sqrt{2} \ge \lambda_n$.
+\end{proof}
+
+Besides principal submatrices, interlacing can also be applied to so-called quotient matrices. 
+Let $A \in \R ^{n \times n}$ be a symmetric matrix whose rows and columns are partitioned according to a partition $\{ X_1, \dots, X_m \}$ of $[n]$, that is, 
+\begin{equation*}
+    A = \begin{bmatrix}
+        A_{1,1} & \dots & A_{1,m} \\
+        \vdots & & \vdots \\
+        A_{m,1} & \dots & A_{m,m} \\
+    \end{bmatrix},
+\end{equation*}
+where $A_{i,j}$ is the submatrix of $A$ consisting of the rows in $X_i$ and the columns \mbox{in $X_j$}.
+Let $$b_{i,j} := \frac{1}{|X_i|} \bm{1}^T A_{i,j}\bm{1}$$ denote the average row sum \mbox{of $A_{i,j}$}.
+The \textit{quotient matrix} of $A$ with respect to the given partition is the matrix
+\begin{equation*}
+    B = \begin{bmatrix}
+        b_{1,1} & \dots & b_{1,m} \\
+        \vdots & & \vdots \\
+        b_{m,1} & \dots & b_{m,m} \\
+    \end{bmatrix} \in \R^{m \times m}.
+\end{equation*}
+If the row sums within each block $A_{i,j}$ are constant, that is $A_{i,j} \bm{1} = b_{i,j} \bm{1}$ for all $i,j \in [m]$, the partition is called \textit{equitable}. 
+In the situation described, we have the following result.
+
+\begin{proposition} \label{prop:partition-interlacing}
+    The eigenvalues of $B$ interlace those of $A$. If the interlacing is tight, the partition is equitable.
+\end{proposition}
+For a proof, see \cite[Corollary 2.5.4]{brouwerhaemers}.
+
+\section{The Perron--Frobenius theorem} \label{section:perron-frobenius}
+
+The Perron--Frobenius theorem is one of the most important tools in spectral graph theory. 
+We will give a version of the result as in \cite{brouwerhaemers}, though it is stated in more detail there.
+
+For matrices $A, B \in \R^{n \times n}$, the notation $A \le B$ means that 
+\begin{equation*}
+    A_{ij} \le B_{ij}, \ \ i, j \in [n].
+\end{equation*}
+If all of the above inequalities are strict, we write $A < B$. 
+In particular, $A \ge 0$ (or $A > 0$) means that all entries of $A$ are nonnegative (resp. positive).
+We shall use the same notation for vectors.
+
+\begin{definition}
+    Let $A \in \R^{n \times n}$, $A \ge 0$.
+    The matrix $A$ is called \textit{irreducible} if for all $i,j \in [n]$ there exists an integer $k$ such that $(A^k)_{ij} > 0$.
+\end{definition}
+
+\begin{theorem}[Perron--Frobenius] \label{thm:perron-frobenius}
+    Let $A \in \R^{n \times n}$, $A \ge 0$ be an irreducible matrix. 
+    Then there is a unique number $\lambda_0 > 0$ with the following properties:
+    \begin{enumerate}
+        \item $\lambda_0$ is an eigenvalue of $A$ with algebraic multiplicity 1.
+        \item For each eigenvalue $\lambda$ of $A$, we have $|\lambda|\, \le \lambda_0$. 
+        \item There is a vector $\bm{v} > 0$ such that $A \bm{v} = \lambda_0 \bm{v}$.
+            Besides $\lambda_0$, no other eigenvalue of $A$ has a nonnegative eigenvector.  
+            % Furthermore, if $A$ has precisely $m$ eigenvalues $\lambda$ with $|\lambda|\, = \lambda_0$, then these are obtained by multiplying $\lambda_0$ with the $m$-th roots of unity, namely
+            % $\lambda = \lambda_0 \cdot e^{\frac{2 \pi i k}{m}}$ for $k = 0, \dots, m - 1$.
+        % \item No other eigenvalue of $A$ besides $\lambda_0$ has a nonnegative eigenvalue.
+        % \item Let $t > 0$, and let $\bm{x} \in \R^n \setminus \{0 \}$, $\bm{x} \ge 0$ be a vector. 
+        %     If $A \bm{x} \le t \bm{x}$, then $t \ge \lambda_0$. 
+        %     If $A \bm{x} \ge t \bm{x}$, then $t \le \lambda_0$.
+        %     In both cases, equality holds if and only if $A \bm{x} = t \bm{x}$.
+        \item Let $B \in \R^{n \times n}$ with $0 \le B \le A$ be another matrix. 
+            If $\mu$ is an eigenvalue of $B$, then $|\mu|\, \le \lambda_0$. 
+            Furthermore, if $|\mu|\, = \lambda_0$, then $B = A$.
+            The same holds if $B$ is a principal submatrix of $A$.
+    \end{enumerate}
+\end{theorem}
+A proof can be found in \cite[Theorem 2.2.1]{brouwerhaemers}.
+% \begin{proof}
+%     See \cite[Theorem 2.2.1]{brouwerhaemers}.
+% \end{proof}
+For more details on Perron--Frobenius theory, see also \cite[Chapter XIII]{gantmacher}.
+
+The Perron--Frobenius theorem immediately provides information about the largest eigenvalue of a graph and the corresponding eigenvector.
+\begin{proposition} \label{prop:perron-frobenius}
+    Let $G$ be a graph with largest eigenvalue $\lambda_1$.
+    \begin{enumerate}
+        \item We have $|\lambda|\; \le \lambda_1$ for each eigenvalue $\lambda$ of $G$.
+    \end{enumerate}
+    Furthermore, if $G$ is connected, then:
+    \begin{enumerate}[resume]
+        \item $\lambda_1$ has multiplicity $1$, and a corresponding eigenvector can be chosen to have only positive entries.
+        \item If $H$ is a proper subgraph of $G$, then $\lambda_1 (H) < \lambda_1$.
+    \end{enumerate}
+\end{proposition}
+
+\begin{proof}
+    Observe that $A_G \ge 0$, and by Proposition \ref{prop:count-walks} $G$ being connected is equivalent to $A_G$ being irreducible.
+    Hence, the Perron--Frobenius theorem immediately implies (ii) and (iii).
+    To show (i), consider any component $C$ of $G$.
+    By the Perron--Frobenius theorem, we have $|\lambda|\, \le \lambda_1 (C)$ for each eigenvalue $\lambda$ of $C$.
+    Since the spectrum of $G$ is the union of the spectra of its components, (i) follows.
+\end{proof}
+
+Due to the various implications of the Perron--Frobenius theorem, the largest eigenvector $\lambda_1$ of a graph is also referred to as the \textit{Perron eigenvalue} of $G$, and a corresponding eigenvector is called a \textit{Perron eigenvector}.
+Observe that if $G$ is disconnected, a Perron eigenvector $\bm x$ can still be chosen to have only nonnegative entries by letting $\bm x$ be strictly positive on a component with spectral radius $\lambda_1$ and zero on all other components.
+
+The next application of the Perron--Frobenius theorem gives a characterisation of connected bipartite graphs.
+\begin{proposition}
+    Let $G$ be a connected graph. Then the following are equivalent:
+    \begin{enumerate}
+        \item $G$ is bipartite.
+        \item The spectrum of $G$ is symmetric about $0$, i.e., for each eigenvalue $\lambda$ of $G$, $-\lambda$ is an eigenvalue as well, with the same multiplicity.
+        \item $-\lambda_1(G)$ is an eigenvalue of $G$.
+    \end{enumerate}
+\end{proposition}
+
+We adopt the proof from \cite[Theorem 8.8.2]{godsilroyle}.
+\begin{proof}
+    We start by showing (i) $\Rightarrow$ (ii).
+    Clearly, if $G$ is bipartite, it has an adjacency matrix of the form 
+    \begin{equation*}
+        A = \begin{bmatrix} 
+                  0 & B \\ 
+                  B^T & 0
+                \end{bmatrix}
+    \end{equation*}
+    for a suitable $\{ 0, 1\}$-matrix $B$. Now if the partitioned vector $(\bm{v}, \bm{w})$ is an eigenvector for the eigenvalue $\lambda$, $(\bm{v}, -\bm{w})$ is an eigenvector for the eigenvalue $-\lambda$, and (ii) follows.
+
+    The implication (ii) $\Rightarrow$ (iii) is trivial, so it remains to show (iii) $\Rightarrow$ (i).
+    Assume that $-\lambda_1$ is an eigenvalue of $G$, and let $A$ denote the adjacency matrix of $G$.
+    Consider the graph $G^2$ induced by $A^2$, i.e. with vertex set $V(G)$ and with an edge between two vertices $x$ and $y$ whenever $(A^2)_{xy} \ne 0$ and $x \ne y$.
+    Since $A^2$ has the eigenvalue $\lambda_1 ^2$ with multiplicity at least 2, $G^2$ is disconnected by the Perron--Frobenius theorem.
+    Observe that a walk of length $2l$ in $G$ corresponds to a walk of length $l$ in $G^2$, 
+    so two vertices are in the same connected component of $G^2$ if and only if they are linked by a walk of even length in $G$.
+    Since $G$ is connected and $G^2$ is not, there are vertices $x, y$ such that every $x, y$-walk in $G$ has odd length. 
+    Let $P$ be such a walk. 
+    We claim that $G$ does not contain an odd cycle:
+    Indeed, otherwise, we would find an $x, y$-walk of even length in $G$ by walking from $x$ to a vertex of that odd cycle, walking around the cycle once, returning to $x$ on the same way and walking along $P$ to $y$. 
+    We conclude that $G$ is bipartite.
+\end{proof}

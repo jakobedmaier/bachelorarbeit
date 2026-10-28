@@ -1,0 +1,47 @@
+\documentclass[hidelinks, 11pt]{book}
+
+\input{header}
+
+\title{Spectral Graph Theory:\\ Classical Results and Recent Applications in Geometry and Computer Science}
+\author{Jakob Edmaier}
+\date{8. April 2025}
+
+\def\theexaminer{Prof.~Dr.~Stefan Glock}
+
+\makeatletter
+\let\thetitle\@title
+\let\theauthor\@author
+\let\thedate\@date
+\makeatother
+
+\begin{document}
+
+\frontmatter
+
+\include{titlepage}
+\cleardoublepage
+\include{abstract}
+\tableofcontents 
+
+\mainmatter
+
+\include{sections/introduction}
+\include{sections/fundamentals}
+\include{sections/results}
+\include{sections/multiplicity}
+\include{sections/sensitivity}
+\include{sections/conclusion}
+
+\phantomsection
+\addcontentsline{toc}{chapter}{Bibliography}
+
+\printbibliography
+
+\clearpage
+\thispagestyle{empty}
+\newpage
+           
+\backmatter
+% \include{statement}
+
+\end{document}

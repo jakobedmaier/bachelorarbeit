@@ -1,0 +1,38 @@
+\chapter{Conclusion}
+
+The main goals of this thesis were to provide an introduction to spectral graph theory and to give deeper insight into two recent research topics.
+First, we presented the very foundations of graph theory, collected useful results from linear algebra and applied them to prove elementary facts about graph spectra.
+Chapter 3 was devoted to classical results, establishing the connection between the structural and spectral properties of a graph.
+We introduced the concept of graph expansion and showed that a high expansion ratio is qualitatively equivalent to a large spectral gap (Cheeger's inequality).
+
+The first major application we discussed was the recent work of Jiang, Tidor, Yao, Zhang, and Zhao \cite{equiangular}, in which the authors determined the number of equiangular lines with a fixed angle in high dimensions. 
+To reduce this geometric question to a graph-theoretic problem, they considered a graph associated with the Gram matrix of a set of unit vectors representing the equiangular set.
+Then, they used the knowledge of forbidden induced subgraphs together with a switching argument to show that this graph can be assumed to have bounded degree.
+Their main contribution to spectral graph theory was a novel result on the distribution of the eigenvalues of bounded-degree graphs: 
+The second eigenvalue multiplicity of a connected $n$-vertex graph with bounded maximum degree is at most $O(n / \log \log n)$.
+Although \cite{equiangular} only needed the fact that the multiplicity is sublinear, they raised the question of whether their bound could be improved.
+
+Addressing this question, we established stronger upper bounds on the second eigenvalue multiplicity for graphs with small balanced separators in Theorem \ref{thm:separable-snd-eigval-mult}.
+As a corollary, we obtained that graphs with a fixed excluded minor have second eigenvalue multiplicity $O(\sqrt{n})$.
+It would be interesting to know whether there are graph classes with small separators for which the bounds of Theorem \ref{thm:separable-snd-eigval-mult} are tight. 
+Besides that, it might be helpful for further research to find other sufficient conditions for graphs to have small second eigenvalue multiplicity.
+
+The second recent research result we discussed was the proof of the Sensitivity Conjecture. 
+Building on a reduction due to Gotsman and Linial, Huang \cite{sensitivity} resolved this long-standing conjecture by proving that every induced subgraph on more than half of the vertices of the $n$-dimensional hypercube has maximum degree at least $\sqrt{n}$.
+Huang constructed a particular signed adjacency matrix of the hypercube and used interlacing to lower bound the largest eigenvalue of a large induced subgraph. 
+This, in turn, yielded the lower bound on the maximum degree.
+
+Spectral graph theory is a highly active field of research, of which we could merely scratch the surface. 
+For further reading on the general subject, we refer the reader to \cite{brouwerhaemers}, \cite{spielman}, and \cite{godsilroyle}. 
+
+There are numerous other interesting applications of spectral graph theory that are beyond the scope of this thesis.
+One example is spectral graph drawing. 
+Intuitively, a "nice" drawing of a graph in the plane is one in which neighbouring vertices are drawn close to each other, and there are few edge crossings.
+An approach to graph drawing proposed by Hall \cite{hall} uses the entries of eigenvectors corresponding to the smallest nonzero Laplace eigenvalues as coordinates for the vertices.
+The theory behind Hall's approach is also explained in \cite{spielman}.
+
+Furthermore, there are profound connections between spectral graph theory and the theory of random walks on graphs.
+A fundamental result in this context states that every simple random walk on a finite graph converges to a limiting stationary distribution. 
+For expander graphs, that is, graphs with a large spectral gap, this happens as rapidly as possible.
+An important consequence is that the set of vertices visited by a "short" random walk on an expander graph resembles (in some sense) a subset of vertices sampled independently from a uniform distribution.
+The surveys \cite{randomwalksongraphs} and \cite[Section 3]{expandergraphs} provide an introduction to this topic.
